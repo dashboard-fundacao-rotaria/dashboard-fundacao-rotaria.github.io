@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Início &middot; Fundação Rotária Rotaract</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="faixa-topo"></div>
+
+<header class="site-header">
+  <a href="index.html" class="marca">
+    <img src="assets/logo/rotaract-rotary-logo.png" alt="Rotaract Brasil | The Rotary Foundation" class="logo-real">
+  </a>
+  <a class="btn-enviar" href="https://forms.gle/SEU-FORMULARIO-AQUI" target="_blank" rel="noopener">
+    Enviar meu projeto
+  </a>
+</header>
+
+<!-- O menu de abas é gerado pelo js/nav.js a partir de UMA lista única
+     (a lista TABS no topo daquele arquivo) — editar o menu em 15 lugares
+     não é mais necessário; edite só js/nav.js. -->
+<nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
+
+
+<section class="capa">
+  <!--
+    Duas versões da capa, por decisão técnica (mesmo motivo já documentado
+    para fundo fotográfico no README): a imagem do Canva é 1920x1080,
+    fixa — ótima em desktop, mas ilegível/cortada se só ela existisse em
+    telas de celular. Por isso:
+    - Desktop (min-width: 900px): mostra a imagem real do Canva.
+    - Mobile: mostra a versão em texto/CSS, responsiva.
+    O bloco de texto continua no HTML mesmo quando visualmente escondido
+    no desktop, para leitores de tela e SEO não perderem o conteúdo.
+  -->
+  <img src="assets/capa/capa-canva.png" alt="Fundação Rotária 2026-27 — Relatório de Contribuições da Fundação Rotária do Rotaract" class="capa-imagem-real">
+
+  <div class="capa-conteudo capa-conteudo-fallback">
+    <span class="capa-ano">2026-27</span>
+    <h1 class="capa-titulo">Fundação<br><span class="rosa">Rotária</span></h1>
+    <p class="capa-sub">Relatório de Contribuições da Fundação Rotária do Rotaract</p>
+  </div>
+  <div class="blob-decor cb1"></div>
+  <div class="blob-decor cb2"></div>
+</section>
+
+
+<footer class="site-footer">
+  <p>Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+</footer>
+<script src="js/nav.js" data-pagina-atual="index.html"></script>
+
+</body>
+</html>
