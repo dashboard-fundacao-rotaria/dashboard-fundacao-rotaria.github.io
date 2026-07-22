@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <title>Destaques &middot; Fundação Rotária Rotaract</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -10,65 +13,51 @@
 
 <div class="faixa-topo"></div>
 
-<header class="site-header">
-  <a href="index.html" class="marca">
-    <img src="assets/logo/rotaract-rotary-logo.png" alt="Rotaract Brasil | The Rotary Foundation" class="logo-real">
-  </a>
-  <a class="btn-enviar" href="https://forms.gle/SEU-FORMULARIO-AQUI" target="_blank" rel="noopener">
-    Enviar meu projeto
-  </a>
-</header>
-
 <!-- O menu de abas é gerado pelo js/nav.js a partir de UMA lista única
      (a lista TABS no topo daquele arquivo) — editar o menu em 15 lugares
      não é mais necessário; edite só js/nav.js. -->
 <nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
 
 
-<main class="pagina-conteudo">
-  <h2 class="secao-titulo">Destaques</h2>
-  <p class="secao-desc">Distritos que mais doaram no mês</p>
+<!--
+  Páginas com imagem do Canva já têm essa faixa colorida grossa
+  desenhada dentro do próprio PNG. Como Destaques é construída do zero
+  (sem imagem — ver comentário abaixo), a faixa precisa ser recriada em
+  CSS pra manter a mesma identidade visual das outras páginas.
+-->
+<div class="faixa-decorativa"></div>
 
-  <!--
-    Estes três cards são MODELO — substitua os campos entre [colchetes]
-    pelos dados reais do mês antes de publicar.
-  -->
-  <div class="grid-destaques">
-    <div class="card-destaque">
-      <span class="medalha prata">Prata</span>
-      <span class="rotulo-destaque">Destaque 1</span>
-      <h3>Distrito [0000]</h3>
-      <p class="sub-destaque">Rotaract Club [Nome]</p>
-      <hr>
-      <p class="motivo-titulo">Motivo do Destaque</p>
-      <p class="motivo-texto">Descreva aqui o motivo pelo qual este distrito/club foi destaque no mês.</p>
+<main class="pagina-conteudo pagina-conteudo-full">
+  <div class="destaques-wrap">
+    <div class="cabecalho-destaques">
+      <div>
+        <h2 class="secao-titulo">Destaques</h2>
+        <p class="secao-desc" id="destaques-subtitulo">Distritos que mais contribuíram</p>
+      </div>
+      <div class="destaques-filtro">
+        <label for="filtro-periodo">Período</label>
+        <select id="filtro-periodo"></select>
+      </div>
     </div>
-    <div class="card-destaque">
-      <span class="medalha ouro">Ouro</span>
-      <span class="rotulo-destaque">Destaque 2</span>
-      <h3>Distrito [0000]</h3>
-      <p class="sub-destaque">Rotaract Club [Nome]</p>
-      <hr>
-      <p class="motivo-titulo">Motivo do Destaque</p>
-      <p class="motivo-texto">Descreva aqui o motivo pelo qual este distrito/club foi destaque no mês.</p>
-    </div>
-    <div class="card-destaque">
-      <span class="medalha bronze">Bronze</span>
-      <span class="rotulo-destaque">Destaque 3</span>
-      <h3>Distrito [0000]</h3>
-      <p class="sub-destaque">Rotaract Club [Nome]</p>
-      <hr>
-      <p class="motivo-titulo">Motivo do Destaque</p>
-      <p class="motivo-texto">Descreva aqui o motivo pelo qual este distrito/club foi destaque no mês.</p>
-    </div>
+
+    <!--
+      Diferente de Capa/Equipe/Guia, esta página NÃO usa o padrão
+      imagem-real + fallback: como "Destaques" muda todo mês, manter uma
+      imagem do Canva sincronizada com o HTML seria trabalho duplicado
+      recorrente. Em vez disso, os 3 cards são gerados dinamicamente a
+      partir de js/destaques.js — edite só aquele arquivo todo mês.
+    -->
+    <div class="grid-destaques" id="grid-destaques"></div>
+    <p class="destaques-proxima" id="destaques-proxima"></p>
   </div>
 </main>
 
 
 <footer class="site-footer">
-  <p>Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+  <p class="footer-copy">Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
 </footer>
+<script src="js/chaves-acesso.js"></script>
 <script src="js/nav.js" data-pagina-atual="destaques.html"></script>
-
+<script src="js/destaques.js"></script>
 </body>
 </html>

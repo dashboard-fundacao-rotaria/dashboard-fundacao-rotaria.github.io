@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <title>Nossa Equipe &middot; Fundação Rotária Rotaract</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -10,34 +13,50 @@
 
 <div class="faixa-topo"></div>
 
-<header class="site-header">
-  <a href="index.html" class="marca">
-    <img src="assets/logo/rotaract-rotary-logo.png" alt="Rotaract Brasil | The Rotary Foundation" class="logo-real">
-  </a>
-  <a class="btn-enviar" href="https://forms.gle/SEU-FORMULARIO-AQUI" target="_blank" rel="noopener">
-    Enviar meu projeto
-  </a>
-</header>
-
 <!-- O menu de abas é gerado pelo js/nav.js a partir de UMA lista única
      (a lista TABS no topo daquele arquivo) — editar o menu em 15 lugares
      não é mais necessário; edite só js/nav.js. -->
 <nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
 
 
-<main class="pagina-conteudo">
-  <h2 class="secao-titulo">Nossa Equipe</h2>
-  <p class="secao-desc">
-    Membros com [Nome] são placeholder do relatório original — preencha em
-    <code>js/equipe.js</code>.
-  </p>
-  <div class="grid-equipe" id="grid-equipe"></div>
+<!--
+  TESTE: antes essa página mostrava a imagem estática do Canva no desktop
+  (min-width:900px) e só usava esse grid dinâmico no mobile. Trocamos pra
+  usar o grid em qualquer tela — vantagem: nunca mais fica desatualizado,
+  edite só js/equipe.js. Se quiser voltar pro esquema anterior (imagem do
+  Canva no desktop), volte a colocar aqui:
+  <div class="canva-full">
+    <img src="assets/equipe/equipe-canva.png" alt="..." class="canva-img">
+  </div>
+  ...e reative a media query ".canva-full{display:none}" abaixo de 900px
+  em css/styles.css (procure "TESTE: grid substituindo Canva" lá).
+-->
+
+<!--
+  Páginas com imagem do Canva já têm essa faixa colorida grossa
+  desenhada dentro do próprio PNG. Como tiramos a imagem daqui (ver
+  comentário acima), a faixa precisa ser recriada em CSS — mesmo padrão
+  usado em Destaques — pra manter a mesma identidade visual das outras
+  páginas.
+-->
+<div class="faixa-decorativa"></div>
+
+<main class="pagina-conteudo pagina-conteudo-full pagina-equipe">
+  <div class="equipe-conteudo-fallback">
+    <h2 class="secao-titulo">Nossa Equipe</h2>
+    <p class="secao-desc">
+      Fundação Rotária &middot; Rotaract Brasil &middot; Ano Rotário 2026-27
+    </p>
+    <div id="destaque-equipe"></div>
+    <div class="grid-equipe" id="grid-equipe"></div>
+  </div>
 </main>
 
 
 <footer class="site-footer">
-  <p>Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+  <p class="footer-copy">Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
 </footer>
+<script src="js/chaves-acesso.js"></script>
 <script src="js/nav.js" data-pagina-atual="equipe.html"></script>
 <script src="js/equipe.js"></script>
 </body>

@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <title>Projetos por Área de Enfoque &middot; Fundação Rotária Rotaract</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -10,43 +13,46 @@
 
 <div class="faixa-topo"></div>
 
-<header class="site-header">
-  <a href="index.html" class="marca">
-    <img src="assets/logo/rotaract-rotary-logo.png" alt="Rotaract Brasil | The Rotary Foundation" class="logo-real">
-  </a>
-  <a class="btn-enviar" href="https://forms.gle/SEU-FORMULARIO-AQUI" target="_blank" rel="noopener">
-    Enviar meu projeto
-  </a>
-</header>
-
 <!-- O menu de abas é gerado pelo js/nav.js a partir de UMA lista única
      (a lista TABS no topo daquele arquivo) — editar o menu em 15 lugares
      não é mais necessário; edite só js/nav.js. -->
 <nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
 
 
-<main class="pagina-conteudo">
-  <h2 class="secao-titulo">Projetos por Área de Enfoque</h2>
-  <p class="secao-desc">
-    Os projetos marcados como "Exemplo" são modelos do relatório original —
-    substitua-os pelos projetos reais enviados pelos clubes assim que
-    disponíveis.
-  </p>
+<!--
+  Mesmo motivo do comentário em Destaques: esta página é construída do
+  zero (sem imagem do Canva), então a faixa colorida grossa precisa ser
+  recriada em CSS pra manter a identidade visual das outras páginas.
+-->
+<div class="faixa-decorativa"></div>
 
-  <div class="toolbar">
-    <label for="filtro">Filtrar por área de enfoque</label>
-    <select id="filtro"></select>
-    <span class="contador" id="contador"></span>
+<main class="pagina-conteudo pagina-conteudo-full">
+  <div class="projetos-wrap">
+    <div class="cabecalho-projetos">
+      <div>
+        <h2 class="secao-titulo">Projetos por Área de Enfoque</h2>
+      </div>
+      <a class="btn-pill rosa-bg" href="https://docs.google.com/forms/d/e/1FAIpQLSdoJU1JLc_-MZgc0l1ew3TsSGz0p8-UA71Foirn4gfyRzv8ng/viewform" target="_blank" rel="noopener">
+        Enviar meu projeto
+      </a>
+    </div>
+
+    <div class="toolbar">
+      <label for="filtro">Filtrar por área de enfoque</label>
+      <select id="filtro"></select>
+      <span class="contador" id="contador"></span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <p class="vazio" id="vazio">Nenhum projeto encontrado nessa área ainda.</p>
   </div>
-
-  <div class="grid" id="grid"></div>
-  <p class="vazio" id="vazio">Nenhum projeto encontrado nessa área ainda.</p>
 </main>
 
 
 <footer class="site-footer">
-  <p>Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+  <p class="footer-copy">Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
 </footer>
+<script src="js/chaves-acesso.js"></script>
 <script src="js/nav.js" data-pagina-atual="projetos.html"></script>
 <script src="js/projetos.js"></script>
 </body>

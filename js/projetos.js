@@ -23,91 +23,82 @@ const AREAS = {
 //   exemplo    -> true para os projetos-modelo do relatório original.
 //                 Marque como false (ou remova o campo) nos projetos reais.
 //                 Isso só controla o selo "Exemplo" no card — não afeta o filtro.
+//
+//   imagem -> a foto grande do topo do card. Duas opções:
+//     (a) URL de uma imagem já hospedada (Drive, Imgur, etc.)
+//     (b) arquivo local dentro de assets/img/ — os dois projetos reais
+//         já apontam pra cá (ex: "assets/img/pontes-para-o-futuro.jpg").
+//         Só colocar o arquivo com esse nome exato na pasta que a foto
+//         aparece sozinha, sem editar mais nada.
+//     Se o arquivo ainda não existir, aparece um placeholder cinza
+//     "Adicione a foto" no lugar — não quebra a página.
 // ============================================================================
 const PROJETOS = [
   // ---- Projetos reais já cadastrados ----
   {
     titulo: "Pontes para o Futuro",
     area: "educacao",
-    descricao: "Oficina de informática na SASBEMC (Cianorte-PR), levando ensino de pacote Office e navegação segura à comunidade.",
-    imagem: "https://placehold.co/640x400/f3e3f0/92278f?text=Pontes+para+o+Futuro",
+    descricao: "Subsídio Distrital do Rotary financiou uma oficina de informática na SASBEMC, em Cianorte (PR), levando ensino de pacote Office e navegação segura na internet a crianças, jovens e adultos em situação de vulnerabilidade — com a operação assumida pela própria instituição após a conclusão.",
+    imagem: "assets/img/pontes-para-o-futuro.jpg",
     link: "https://spc.rotary.org/project?guid=5E31FE96-2883-4D69-B8C0-EE2FEEBB68C4",
-    pills: [{ texto: "8 Meses", cor: "#1f1f1e" }, { texto: "US$ 4.860", cor: "#6b6a66" }],
+    pills: [{ texto: "40 Voluntários", cor: "#92278f" }, { texto: "8 Meses", cor: "#1f1f1e" }, { texto: "US$ 4.860", cor: "#6b6a66" }],
     exemplo: false
   },
   {
     titulo: "Reciclagem em Foco",
     area: "ambiente",
-    descricao: "Equipamentos doados à Cooperativa Crescer (Lapa-SP): notebook, marmiteiros e armários para 70 cooperados.",
-    imagem: "https://placehold.co/640x400/e1edf7/0072bc?text=Reciclagem+em+Foco",
+    descricao: "Subsídio Distrital do Rotary equipou a Cooperativa Crescer, em Lapa (SP), com um notebook, marmiteiros e armários para os cooperados – melhorando as condições administrativas, operacionais e de trabalho de quem atua há 19 anos na coleta de material reciclável da região.",
+    imagem: "assets/img/reciclagem-em-foco.jpg",
     link: "https://spc.rotary.org/project?guid=1B1CE671-DB61-4143-84F6-C3710B0514E2",
-    pills: [{ texto: "70 Cooperados", cor: "#0072bc" }, { texto: "6 Meses", cor: "#1f1f1e" }],
+    pills: [{ texto: "70 Cooperados", cor: "#0072bc" }, { texto: "6 Meses", cor: "#1f1f1e" }, { texto: "US$ 1.675", cor: "#6b6a66" }],
     exemplo: false
   },
 
   // ---- Projetos-exemplo do relatório original (substituir quando houver projetos reais dessas áreas) ----
   {
-    titulo: "Projeto Exemplo: Mediação Comunitária",
+    titulo: "Brinquedoteca — Casa de Acolhimento Adiles de Figueiredo Ribeiro",
     area: "paz",
-    descricao: "Financiado pela Fundação Rotária, capacitou jovens líderes em técnicas de mediação de conflitos em comunidades vulneráveis, com oficinas semanais durante 6 meses.",
-    imagem: "https://placehold.co/640x400/fbe3ee/e4177b?text=Media%C3%A7%C3%A3o+Comunit%C3%A1ria",
-    link: "#",
-    pills: [{ texto: "200+ Famílias", cor: "#e4177b" }, { texto: "6 Meses", cor: "#1f1f1e" }, { texto: "US$ 15.000", cor: "#6b6a66" }],
-    exemplo: true
+    descricao: "Projeto do Rotary Club de Corumbá que equipou uma brinquedoteca na Casa de Acolhimento Institucional, atendendo crianças em situação de vulnerabilidade social. Concluído com apoio de subsídio distrital da Fundação Rotária, parceiros locais e 14 voluntários.",
+    imagem: "assets/img/brinquedoteca.jpg",
+    link: "https://spc.rotary.org/project?guid=acf0e8f2-38ba-4c97-a0f9-575fe712fefd&lang=pt",
+    pills: [{ texto: "30 crianças", cor: "#d41367" }, { texto: "1 mês", cor: "#1f1f1e" }, { texto: "US$ 3.900", cor: "#6b6a66" }],
+    exemplo: false
   },
   {
-    titulo: "Projeto Exemplo: Água Limpa para Todos",
+    titulo: "Projeto bebedouros — CAIA itinerante",
     area: "agua",
-    descricao: "Instalou sistemas de filtragem de água em 3 escolas rurais, beneficiando mais de 500 alunos, com palestras sobre higiene e saneamento básico.",
-    imagem: "https://placehold.co/640x400/dcf1f5/00a9ce?text=%C3%81gua+Limpa+para+Todos",
-    link: "#",
-    pills: [{ texto: "500+ Alunos", cor: "#00a9ce" }, { texto: "3 Escolas", cor: "#1f1f1e" }, { texto: "US$ 20.000", cor: "#6b6a66" }],
-    exemplo: true
+    descricao: "Com subsídio distrital da Fundação Rotária, o Rotary Club Foz do Iguaçu-Grande Lago instalou 6 purificadores de água nos centros de convivência do CAIA, entidade que atende crianças e adolescentes em situação de vulnerabilidade em Foz do Iguaçu (PR).",
+    imagem: "assets/img/bebedouros.jpg",
+    link: "https://spc.rotary.org/project?guid=dd1ef70b-d05a-4bd6-8f7a-7006b03c720e",
+    pills: [{ texto: "430+ jovens", cor: "#00a9ce" }, { texto: "6 bebedouros", cor: "#1f1f1e" }, { texto: "US$ 1.200", cor: "#6b6a66" }],
+    exemplo: false
   },
   {
-    titulo: "Projeto Exemplo: Vacinação em Comunidades Rurais",
+    titulo: "Estrutura da cozinha — IDAC Maanain",
     area: "doencas",
-    descricao: "Campanhas de vacinação rural de difícil acesso, com equipes de saúde percorrendo vilarejos durante 4 meses, imunizando crianças e adultos.",
-    imagem: "https://placehold.co/640x400/fbe0dd/ee3124?text=Vacina%C3%A7%C3%A3o+Rural",
-    link: "#",
-    pills: [{ texto: "1200+ Vacinados", cor: "#ee3124" }, { texto: "4 Meses", cor: "#1f1f1e" }, { texto: "US$ 25.000", cor: "#6b6a66" }],
-    exemplo: true
+    descricao: "Com subsídio distrital da Fundação Rotária e apoio do Rotary Club Assis-Fraternal, o projeto equipou a cozinha da comunidade terapêutica IDAC Maanain, em Assis (SP), com geladeira, fogão industrial, cuba de inox e demais itens, melhorando as condições de acolhimento de pessoas em recuperação de dependência química.",
+    imagem: "assets/img/cozinha.jpg",
+    link: "https://spc.rotary.org/project?guid=8b3dd1a6-198d-4cdf-be00-effd78021fb6",
+    pills: [{ texto: "15 pessoas atendidas", cor: "#ee3124" }, { texto: "5,5 meses", cor: "#1f1f1e" }, { texto: "US$ 2.141", cor: "#6b6a66" }],
+    exemplo: false
   },
   {
-    titulo: "Projeto Exemplo: Pré-Natal para Todas",
+    titulo: "Cuidar: vida plena para mulheres e mães",
     area: "saude-mi",
-    descricao: "Criou postos móveis de atendimento pré-natal em áreas carentes, oferecendo consultas, exames e orientação nutricional para gestantes sem acesso a serviços de saúde.",
-    imagem: "https://placehold.co/640x400/fcecd9/f7941d?text=Pr%C3%A9-Natal+para+Todas",
-    link: "#",
-    pills: [{ texto: "350+ Gestantes", cor: "#f7941d" }, { texto: "8 Meses", cor: "#1f1f1e" }, { texto: "US$ 30.000", cor: "#6b6a66" }],
-    exemplo: true
+    descricao: "Com subsídio distrital da Fundação Rotária e apoio dos clubes São Paulo-Paraíso e São Paulo-Brasil-Taiwan, o projeto adquiriu um aspirador Dia-Pump Colibri para o Hospital e Maternidade JJM, em Guarulhos (SP), reforçando o cuidado ginecológico e obstétrico oferecido pela instituição.",
+    imagem: "assets/img/mulheres-e-maes.jpg",
+    link: "https://spc.rotary.org/project?guid=a869d62c-cdab-42f1-b28f-ae5118760855",
+    pills: [{ texto: "210 pacientes/mês", cor: "#f7941d" }, { texto: "8 meses", cor: "#1f1f1e" }, { texto: "US$ 1.543", cor: "#6b6a66" }],
+    exemplo: false
   },
   {
-    titulo: "Projeto Exemplo: Biblioteca Comunitária",
-    area: "educacao",
-    descricao: "Construção de uma biblioteca comunitária com acervo de mais de 5.000 livros, além de programas de alfabetização para adultos e reforço escolar para crianças em vulnerabilidade.",
-    imagem: "https://placehold.co/640x400/f3e3f0/92278f?text=Biblioteca+Comunit%C3%A1ria",
-    link: "#",
-    pills: [{ texto: "800+ Leitores", cor: "#92278f" }, { texto: "12 Meses", cor: "#1f1f1e" }, { texto: "US$ 35.000", cor: "#6b6a66" }],
-    exemplo: true
-  },
-  {
-    titulo: "Projeto Exemplo: Capacitação Profissional",
+    titulo: "Forno da esperança — geração de renda e reintegração social",
     area: "economico",
-    descricao: "Ofereceu cursos de capacitação profissional em costura, jardinagem e informática, gerando renda e autonomia para famílias em comunidades de baixa renda.",
-    imagem: "https://placehold.co/640x400/eaf4dc/8dc63f?text=Capacita%C3%A7%C3%A3o+Profissional",
-    link: "#",
-    pills: [{ texto: "150+ Formados", cor: "#8dc63f" }, { texto: "10 Meses", cor: "#1f1f1e" }, { texto: "US$ 22.000", cor: "#6b6a66" }],
-    exemplo: true
-  },
-  {
-    titulo: "Projeto Exemplo: Reflorestamento Urbano",
-    area: "ambiente",
-    descricao: "Plantio de mais de 3.000 mudas nativas em áreas degradadas da cidade, envolvendo escolas e voluntários em ações de educação ambiental e recuperação de nascentes.",
-    imagem: "https://placehold.co/640x400/e1edf7/0072bc?text=Reflorestamento+Urbano",
-    link: "#",
-    pills: [{ texto: "3.000+ Mudas", cor: "#0072bc" }, { texto: "6 Meses", cor: "#1f1f1e" }, { texto: "US$ 18.000", cor: "#6b6a66" }],
-    exemplo: true
+    descricao: "Com subsídio distrital da Fundação Rotária, o Rotary Club Santa Fé do Sul entregou um forno industrial, um liquidificador industrial e assadeiras à Chácara Jerusalém, casa de recuperação de dependência química, viabilizando a produção e venda de pães e bolos como fonte de renda e reintegração social.",
+    imagem: "assets/img/forno-da-esperanca.jpg",
+    link: "https://spc.rotary.org/project?guid=b65e2398-9580-4a16-ba34-259b2d5fefc2",
+    pills: [{ texto: "20 pessoas atendidas", cor: "#8dc63f" }, { texto: "5,5 meses", cor: "#1f1f1e" }, { texto: "US$ 411", cor: "#6b6a66" }],
+    exemplo: false
   },
 ];
 
@@ -148,7 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return `
         <div class="card" data-area="${p.area}">
-          <img src="${p.imagem}" alt="${p.titulo}" loading="lazy">
+          <img src="${p.imagem}" alt="${p.titulo}" loading="lazy"
+               onerror="this.onerror=null;this.src='https://placehold.co/640x400/eeeeee/999999?text=Adicione+a+foto';">
           <div class="card-body">
             <div class="eyebrow" style="color:${areaInfo.cor}">
               <span class="dot" style="background:${areaInfo.cor}"></span>${areaInfo.label}

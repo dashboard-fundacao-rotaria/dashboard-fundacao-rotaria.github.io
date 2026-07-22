@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <title>Sua doação transforma &middot; Fundação Rotária Rotaract</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -10,49 +13,63 @@
 
 <div class="faixa-topo"></div>
 
-<header class="site-header">
-  <a href="index.html" class="marca">
-    <img src="assets/logo/rotaract-rotary-logo.png" alt="Rotaract Brasil | The Rotary Foundation" class="logo-real">
-  </a>
-  <a class="btn-enviar" href="https://forms.gle/SEU-FORMULARIO-AQUI" target="_blank" rel="noopener">
-    Enviar meu projeto
-  </a>
-</header>
-
 <!-- O menu de abas é gerado pelo js/nav.js a partir de UMA lista única
      (a lista TABS no topo daquele arquivo) — editar o menu em 15 lugares
      não é mais necessário; edite só js/nav.js. -->
 <nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
 
 
-<main class="pagina-conteudo secao-doe">
-  <span class="btn-pill rosa-bg tag-doe">Doe Agora</span>
-  <div class="tres-colunas">
-    <div class="coluna-doe">
-      <h4 class="titulo-azul">Por que doar?</h4>
-      <p>Ao contribuir para a Fundação Rotária, você investe na humanidade.
-      Destinamos 90,8% das doações a projetos sociais.</p>
+<!--
+  Mesmo padrão de capa/equipe/guia/sobre: imagem real do Canva em
+  telas grandes, full-bleed; texto real em HTML/CSS (responsivo,
+  acessível) no mobile.
+
+  Os botões "Doe Agora" e "Formas de Doar" que aparecem NA IMAGEM são
+  só pixel — por isso são RECRIADOS abaixo como <a> de verdade (mesma
+  cor, mesmo texto), posicionados exatamente por cima do desenho. As
+  posições (left/top/width/height em %) foram medidas por análise de
+  pixel na imagem original (assets/doacao/doacao-canva.png), não
+  estimadas. Se a arte do Canva mudar de novo, remedir.
+-->
+<div class="canva-full">
+  <img src="assets/doacao/doacao-canva.png" alt="Sua doação transforma — Por que doar, Como as doações são usadas, Qual o impacto de uma doação" class="canva-img">
+  <a class="btn-overlay-real" style="left:8.33%;top:10%;width:16.98%;height:6.67%;background:var(--rosa);"
+     href="https://my.rotary.org/en/donate" target="_blank" rel="noopener">DOE AGORA</a>
+  <a class="btn-overlay-real" style="left:40.99%;top:84.72%;width:16.98%;height:6.67%;background:var(--faixa-3);"
+     href="https://www.rotary.org/pt/get-involved/ways-to-give" target="_blank" rel="noopener">Formas de Doar</a>
+</div>
+
+<main class="pagina-conteudo">
+  <div class="doacao-conteudo-fallback secao-doe">
+    <a class="btn-pill rosa-bg tag-doe" href="https://my.rotary.org/en/donate" target="_blank" rel="noopener">Doe Agora</a>
+    <div class="tres-colunas">
+      <div class="coluna-doe">
+        <h4 class="titulo-azul">Por que doar?</h4>
+        <p>Ao contribuir para a Fundação Rotária, você investe na humanidade.
+        Destinamos 90,8% das doações a projetos sociais.</p>
+      </div>
+      <div class="coluna-doe">
+        <h4 class="titulo-verde">Como as doações são usadas?</h4>
+        <p>Nossos 35.000 Rotary Clubs implementam projetos dos mais diversos
+        tipos, reduzindo a incidência da pólio em 99% no mundo e ampliando o
+        acesso à água limpa.</p>
+      </div>
+      <div class="coluna-doe">
+        <h4 class="titulo-roxo">Qual o impacto de uma doação?</h4>
+        <p>Bastam US$ 0,60 para vacinar uma criança contra a paralisia infantil.
+        Com a equiparação 2:1 da Fundação Bill e Melinda Gates para doações à
+        erradicação da pólio, sua contribuição vale o triplo.</p>
+      </div>
     </div>
-    <div class="coluna-doe">
-      <h4 class="titulo-verde">Como as doações são usadas?</h4>
-      <p>Nossos 35.000 Rotary Clubs implementam projetos dos mais diversos
-      tipos, reduzindo a incidência da pólio em 99% no mundo e ampliando o
-      acesso à água limpa.</p>
-    </div>
-    <div class="coluna-doe">
-      <h4 class="titulo-roxo">Qual o impacto de uma doação?</h4>
-      <p>Bastam US$ 0,60 para vacinar uma criança contra a paralisia infantil.
-      Com a equiparação 2:1 da Fundação Bill e Melinda Gates para doações à
-      erradicação da pólio, sua contribuição vale o triplo.</p>
-    </div>
+    <a class="btn-pill azul-bg centralizado" href="https://www.rotary.org/pt/get-involved/ways-to-give" target="_blank" rel="noopener">Formas de Doar</a>
   </div>
-  <a class="btn-pill azul-bg centralizado" href="https://www.rotary.org/pt/donate" target="_blank" rel="noopener">Formas de Doar</a>
 </main>
 
 
 <footer class="site-footer">
-  <p>Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+  <p class="footer-copy">Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
 </footer>
+<script src="js/chaves-acesso.js"></script>
 <script src="js/nav.js" data-pagina-atual="doacao.html"></script>
 
 </body>

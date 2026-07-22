@@ -1,185 +1,112 @@
-# Fundação Rotária &middot; Rotaract Brasil (v2 — multi-página)
+# Fundação Rotária · Rotaract Brasil
 
-Site estático (HTML/CSS/JS puro, sem build, sem backend), agora com
-**uma página por seção**, espelhando exatamente a ordem e os nomes das
-abas do relatório real no Looker Studio.
+Site oficial de acompanhamento das contribuições do Rotaract Brasil à
+Fundação Rotária (The Rotary Foundation), desenvolvido para a equipe de
+assessoria nacional de Fundação Rotária. Reúne relatórios por distrito,
+reconhecimento aos destaques mensais, informações institucionais e o
+Programa de Reconhecimento do Ano Rotário 2026-27.
 
----
-
-## ⚠ Se o CSS "sumiu" ao abrir o site
-
-Isso quase certamente aconteceu porque, em algum momento, você abriu um
-arquivo `.html` **sozinho**, fora da pasta do projeto — sem as pastas
-`css/` e `js/` ao lado dele. O HTML referencia o estilo com um caminho
-relativo (`css/styles.css`); se esse arquivo não estiver dentro da mesma
-pasta que `css/` e `js/`, o navegador não encontra o estilo e mostra tudo
-sem formatação.
-
-**Regra simples para nunca mais acontecer:** sempre extraia o `.zip`
-inteiro e abra o `index.html` **de dentro da pasta extraída** — nunca um
-`.html` copiado/baixado separadamente.
+Site estático (HTML, CSS e JavaScript puros — sem build, sem backend,
+sem banco de dados), hospedado via GitHub Pages.
 
 ---
+
+## Sobre o projeto
+
+O site funciona como um hub de navegação e comunicação, reunindo:
+
+- Relatórios de contribuição por distrito, incorporados via Looker Studio
+  (Google Data Studio);
+- Reconhecimento mensal aos distritos com maior contribuição;
+- As regras oficiais do Programa de Reconhecimento da Fundação Rotária;
+- Apresentação da equipe nacional de assessoria;
+- Conteúdo institucional sobre a Fundação Rotária e formas de doar;
+- Acesso segmentado por distrito a relatórios individuais.
+
+## Estrutura de páginas
+
+| Página | Arquivo |
+|---|---|
+| Início | `index.html` |
+| Nossa Equipe | `equipe.html` |
+| Destaques | `destaques.html` |
+| Programa de Reconhecimento | `reconhecimento.html` |
+| Sobre a Fundação Rotária | `sobre.html` |
+| Projetos por Área de Enfoque | `projetos.html` |
+| Total de contribuição — Brasil / Área 29 / Área 31 | `estat-geral.html`, `estat-area29.html`, `estat-area31.html` |
+| Doações por Fundo | `estat-fundo.html` |
+| QTD Rotary Direct | `rotary-direct.html` |
+| ABTRF | `abtrf.html` |
+| Campanhas | `campanhas.html` |
+| Fale Conosco | `contato.html` |
+
+O menu de navegação é gerado dinamicamente por `js/nav.js` a partir de
+uma única lista (`TABS`) — todas as páginas herdam o mesmo menu
+automaticamente, sem precisar editar cada arquivo HTML individualmente.
 
 ## Estrutura de pastas
 
 ```
 rfr-v2/
-├── index.html            → Início (só a capa)
-├── equipe.html            → Nossa Equipe
-├── guia.html               → Guia de Utilização (reservada)
-├── destaques.html          → Destaques
-├── sobre.html               → Sobre a Fundação Rotária
-├── doacao.html              → Sua doação transforma
-├── projetos.html            → Projetos por Área de Enfoque
-├── estat-geral.html         → Total de contribuição dos distritos do Brasil
-├── estat-area29.html        → Total de contribuição - Área 29
-├── estat-area31.html        → Total de contribuição - Área 31
-├── estat-fundo.html         → Doações por Fundo
-├── rotary-direct.html       → QTD Rotary Direct (reservada)
-├── abtrf.html                → ABTRF (reservada)
-├── campanhas.html            → Campanhas (reservada)
-├── contato.html              → Fale Conosco
+├── index.html, equipe.html, destaques.html, ...   → páginas do site
+├── distritos/                                      → páginas de acesso restrito por distrito
 ├── css/
-│   └── styles.css            → todo o estilo (inclui a barra de abas)
+│   └── styles.css                                  → estilo global
 ├── js/
-│   ├── nav.js                 → menu de abas (fonte única, edite só aqui)
-│   ├── projetos.js           → áreas de enfoque, projetos, filtro
-│   └── equipe.js              → lista da equipe nacional
-├── assets/
-│   ├── img/                   → fotos dos projetos (opcional, arquivo local)
-│   └── equipe/                 → fotos da equipe (opcional, arquivo local)
+│   ├── nav.js                                       → menu (fonte única)
+│   ├── destaques.js                                 → destaques mensais
+│   ├── equipe.js                                     → equipe nacional
+│   ├── projetos.js                                   → projetos por área de enfoque
+│   └── chaves-acesso.js                               → mapeamento de acesso por distrito
+├── assets/                                           → imagens e fotos
 └── README.md
 ```
 
-Cada página HTML carrega o menu de abas dinamicamente a partir de
-**`js/nav.js`** (fonte única — ver seção "Como editar o menu de abas"
-abaixo). O `<nav>` no HTML de cada página é só um contêiner vazio,
-preenchido pelo script no carregamento.
+## Tecnologias
 
----
+- HTML5, CSS3 e JavaScript (ES6+), sem frameworks nem etapa de build
+- Fonte DM Sans (Google Fonts)
+- Relatórios incorporados via Looker Studio (Google Data Studio)
+- Formulário de contato via Google Forms
 
-## Logo real e capa do Canva
+## Como publicar
 
-Duas peças de arte real foram incorporadas:
+1. Faça o clone ou baixe este repositório.
+2. Publique a pasta como está em qualquer hospedagem de site estático
+   (GitHub Pages, Netlify, Vercel, etc.) — não há etapa de build.
+3. Para GitHub Pages: em **Settings → Pages**, selecione a branch
+   principal e a raiz do repositório como origem.
 
-- **Logo** (`assets/logo/rotaract-rotary-logo.png`) — substitui o "logo em
-  texto" que existia antes no cabeçalho de todas as páginas.
+## Manutenção mensal
 
-- **Capa** (`assets/capa/capa-canva.png`) — a arte pronta do Canva
-  (1920x1080) aparece como a capa em `index.html`, mas **só em telas a
-  partir de 900px de largura**. Abaixo disso, o site volta para a versão
-  em texto/CSS (título + subtítulo reais), responsiva.
+**Destaques** (`js/destaques.js`): a cada mês fechado, adicione um novo
+bloco em `PERIODOS_MENSAIS` com os três distritos (ouro, prata, bronze)
+e o valor total contribuído. A página seleciona automaticamente o mês a
+exibir com base na data atual — não é necessário alterar HTML.
 
-  **Por que não usar a imagem em todas as telas:** o mesmo motivo já
-  vale para qualquer imagem de fundo larga — cortar uma imagem 1920x1080
-  para caber numa tela de celular estreita esconde a maior parte da
-  composição. Em vez de forçar isso, a versão em texto assume no mobile.
+**Equipe** (`js/equipe.js`): edite nome, cargo, distrito e foto de cada
+membro diretamente na lista `EQUIPE`.
 
-  **Por que o texto continua no HTML mesmo escondido no desktop:** para
-  não perder acessibilidade (leitor de tela) nem SEO — o texto real
-  "Fundação Rotária 2026-27" fica presente no código mesmo quando a
-  imagem está sendo exibida, só visualmente oculto (técnica
-  `.capa-conteudo-fallback`, não é `display:none` — leitores de tela
-  ainda leem normalmente).
+**Projetos** (`js/projetos.js`): siga o mesmo padrão para adicionar
+novos projetos por área de enfoque.
 
-  Se no futuro você tiver uma versão da arte do Canva pensada para
-  celular (retrato, elementos reposicionados), é só adicionar um
-  segundo `<img>` com uma media query para telas pequenas.
+## Acesso segmentado por distrito
 
----
+O site conta com um mecanismo simples de chave de acesso: cada distrito
+recebe uma chave própria que o direciona à sua página individual de
+relatório, dentro da pasta `distritos/`. O mapeamento entre chaves e
+páginas fica em `js/chaves-acesso.js`.
 
-## Correspondência com as abas reais do relatório
+**Importante:** este é um mecanismo de conveniência, não um sistema de
+autenticação com segurança robusta — o código roda inteiramente no
+navegador do visitante, então qualquer pessoa com conhecimento técnico
+básico pode inspecionar o código-fonte da página. Não é adequado para
+dados sigilosos ou de alta sensibilidade. A lista de chaves ativas e a
+qual distrito cada uma pertence é mantida em uma planilha interna, fora
+deste repositório.
 
-Nomeei e ordenei as páginas exatamente como aparecem na barra de abas do
-seu Looker Studio (confirmado no print que você enviou):
+## Licença e créditos
 
-Início → Nossa Equipe → Guia de Utilização → Destaques → Sobre a
-Fundação Rotária → Sua doação transforma → Projetos por Área de Enfoque →
-Total de contribuição dos distritos do Brasil → Total de contribuição -
-Área 29 → Total de contribuição - Área 31 → Doações por Fundo → QTD
-Rotary Direct → ABTRF → Campanhas → Fale Conosco.
-
-**Os Page IDs de Área 29 / Área 31 / Doações por Fundo continuam sendo
-inferência de posição** (alta confiança, mas não checada visualmente por
-você ainda) — cada uma dessas três páginas mostra um aviso amarelo
-lembrando disso. Confira o título dentro de cada gráfico embutido antes
-de divulgar o link publicamente.
-
----
-
-## Como editar o menu de abas
-
-O menu agora é gerado por **`js/nav.js`** — uma lista única (`TABS`) no
-topo do arquivo. Para adicionar, remover, renomear ou reordenar uma aba,
-edite **só essa lista**; as 15 páginas puxam o menu dali automaticamente
-via JavaScript, no carregamento da página. Não precisa mais editar o
-HTML de cada arquivo individualmente.
-
-Isso funciona normalmente mesmo abrindo os arquivos direto no navegador
-(sem servidor, via `file://`), porque usa uma tag `<script src="...">`
-comum — diferente de um `fetch()` de HTML, que o navegador bloqueia
-nesse cenário por política de segurança (CORS). Foi por isso que optei
-por essa abordagem em vez de um "include" de HTML.
-
-Cada página carrega `js/nav.js` com um atributo
-`data-pagina-atual="nome-do-arquivo.html"` no próprio `<script>` — é
-assim que o menu sabe qual aba marcar como ativa (rosa, sublinhada) em
-cada página. Se copiar o `<head>`/rodapé de uma página pra criar uma
-nova, lembre de atualizar esse atributo.
-
----
-
-## Como adicionar um projeto novo
-
-Em `js/projetos.js`, adicione um objeto na lista `PROJETOS` (mesma
-estrutura de antes — ver comentários no próprio arquivo).
-
-## Como adicionar um membro à equipe
-
-Em `js/equipe.js`, adicione um objeto na lista `EQUIPE`.
-
-## Como preencher as seções reservadas
-
-`guia.html`, `rotary-direct.html`, `abtrf.html` e `campanhas.html` têm um
-bloco `<div class="placeholder-reservado">` com um aviso tracejado
-"Conteúdo em breve". Substitua esse bloco pelo conteúdo real quando
-disponível; pode remover a classe `secao-reservada`/`tag-em-breve` depois.
-
----
-
-## Configurando os painéis de Estatística
-
-Cada painel (`estat-geral.html`, `estat-area29.html`, `estat-area31.html`,
-`estat-fundo.html`) já tem o Report ID e Page ID reais aplicados. Se o
-Google pedir login mesmo com o relatório marcado como público, o
-problema normalmente é a credencial da fonte de dados, não a permissão
-do relatório — em `Recurso → Gerenciar fontes de dados adicionadas`,
-edite as credenciais de cada fonte e troque de "Credenciais do
-visualizador" para "Credenciais do proprietário".
-
----
-
-## Como publicar (hospedagem gratuita)
-
-### Netlify (recomendado)
-1. Crie uma conta grátis em [netlify.com](https://netlify.com).
-2. Arraste a pasta `rfr-v2` inteira (não arquivos soltos) para a área de
-   deploy manual.
-3. O site sobe com uma URL tipo `seu-projeto.netlify.app`, com HTTPS
-   automático.
-
----
-
-## Limitações conhecidas
-
-- **Sem banco de dados.** Projeto/membro novo = editar `js/projetos.js`
-  ou `js/equipe.js` manualmente.
-- **Menu depende de JavaScript.** Se o visitante tiver JS desativado
-  (raro), a barra de abas não aparece — o conteúdo da página continua
-  visível normalmente, só a navegação some. Não implementei fallback
-  para esse caso por ser um cenário muito incomum hoje em dia.
-- **Erros de CSS não aparecem como erro** — o navegador ignora regras
-  quebradas silenciosamente; confira visualmente após qualquer edição.
-- **"Enviar meu projeto" não publica nada sozinho** — leva só ao Google
-  Forms.
+Conteúdo institucional da Fundação Rotária (The Rotary Foundation) e do
+Rotaract Brasil. Desenvolvido para uso interno da equipe de assessoria
+nacional de Fundação Rotária.

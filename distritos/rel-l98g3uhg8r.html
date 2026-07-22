@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  if (sessionStorage.getItem('acessoAtivo') !== '1') {
+    location.replace('../index.html');
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<title>Relatório &middot; Fundação Rotária Rotaract</title>
+<link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<div class="faixa-topo"></div>
+
+<nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
+
+<div class="aviso-girar" role="status">Gire seu aparelho para melhor visualização 🔄</div>
+<section class="embed-secao-full">
+  <div class="embed-wrap embed-wrap-full">
+    <iframe title="Relatório do distrito"
+      src="SUBSTITUIR_PELA_URL_DO_LOOKER_STUDIO_DISTRITO_4660"
+      frameborder="0" allowfullscreen
+      sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <p class="footer-copy">Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+</footer>
+<script src="../js/chaves-acesso.js"></script>
+<script src="../js/nav.js" data-pagina-atual="rel-l98g3uhg8r.html" data-distrito="4660"></script>
+
+</body>
+</html>

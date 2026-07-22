@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <title>Fale Conosco &middot; Fundação Rotária Rotaract</title>
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -10,45 +13,52 @@
 
 <div class="faixa-topo"></div>
 
-<header class="site-header">
-  <a href="index.html" class="marca">
-    <img src="assets/logo/rotaract-rotary-logo.png" alt="Rotaract Brasil | The Rotary Foundation" class="logo-real">
-  </a>
-  <a class="btn-enviar" href="https://forms.gle/SEU-FORMULARIO-AQUI" target="_blank" rel="noopener">
-    Enviar meu projeto
-  </a>
-</header>
-
 <!-- O menu de abas é gerado pelo js/nav.js a partir de UMA lista única
      (a lista TABS no topo daquele arquivo) — editar o menu em 15 lugares
      não é mais necessário; edite só js/nav.js. -->
 <nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
 
 
+<!--
+  Mesmo motivo do comentário em Destaques/Projetos: esta página é
+  construída do zero (sem imagem do Canva), então a faixa colorida
+  grossa precisa ser recriada em CSS pra manter a identidade visual
+  das outras páginas.
+-->
+<div class="faixa-decorativa"></div>
+
 <main class="pagina-conteudo secao-contato">
   <h2 class="secao-titulo">Dúvidas ou Sugestões?</h2>
-  <div class="duas-colunas">
-    <div>
-      <p>
-        Tem dúvidas, sugestões ou quer saber mais sobre as contribuições à
-        Fundação Rotária? Entre em contato com a Equipe Nacional.
-      </p>
-      <a class="btn-pill rosa-bg" href="https://forms.gle/SEU-FORMULARIO-CONTATO-AQUI" target="_blank" rel="noopener">
-        Abrir formulário de contato
-      </a>
-    </div>
-    <div>
-      <h3>Contatos</h3>
-      <p>Graziele Amorim (Área 31): (11) 94892-7573</p>
-      <p>Abraão Andrade (Área 29): (84) 9908-1221</p>
-    </div>
+  <p>
+    Tem dúvidas, sugestões ou quer saber mais sobre as contribuições à
+    Fundação Rotária? Preencha o formulário abaixo. A Equipe Nacional
+    responderá o mais breve possível.
+  </p>
+
+  <div class="contato-telefones">
+    <span><strong>Graziele Amorim</strong> (Área 31): (11) 94892-7573</span>
+    <span><strong>Abraão Andrade</strong> (Área 29): (84) 9908-1221</span>
+  </div>
+
+  <!--
+    Formulário embutido de verdade (não é iframe de dashboard, é Google
+    Forms — sem os problemas de credencial/billing que tivemos com o
+    Looker Studio). A altura (1900px) foi calculada com uma margem sobre
+    o valor que você mediu (1848px) pra sobrar espaço, não cortar. Se
+    sobrar espaço em branco no fim ou faltar espaço, ajuste
+    ".form-embed-wrap iframe" em css/styles.css.
+  -->
+  <div class="form-embed-wrap">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdMKlmp8P0Bc7bJbfWSB5Kb3Q5-sgnUDkbHSCWVG0u6mb3K7w/viewform?embedded=true"
+      frameborder="0" marginheight="0" marginwidth="0">Carregando…</iframe>
   </div>
 </main>
 
 
 <footer class="site-footer">
-  <p>Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
+  <p class="footer-copy">Rotaract Brasil &middot; Fundação Rotária &middot; Ano Rotário 2026-27</p>
 </footer>
+<script src="js/chaves-acesso.js"></script>
 <script src="js/nav.js" data-pagina-atual="contato.html"></script>
 
 </body>

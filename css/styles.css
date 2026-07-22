@@ -8,7 +8,7 @@
   --ink-soft:#6b6a66;
   --borda:#ececea;
 
-  --rosa:#e4177b;
+  --rosa:#d41367;
   --azul:#0072bc;
   --verde:#3f8f4f;
   --roxo:#8b3fa0;
@@ -27,7 +27,7 @@ body{
   margin:0;
   background-color: var(--bg-page);
   color: var(--ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   position: relative;
   overflow-x: hidden;
 }
@@ -43,35 +43,37 @@ body{
     var(--faixa-6) 83%, var(--faixa-6) 100%);
 }
 
+/* Faixa grossa decorativa — usada só nas páginas construídas do zero
+   (Projetos, Destaques, Fale Conosco), que não têm imagem do Canva com
+   essa faixa já desenhada dentro do próprio PNG. Mesmas cores da
+   .faixa-topo. Altura calculada por medição de pixel real nas imagens
+   do Canva (12px de 1080px de altura = 1,11% da altura da imagem;
+   como a imagem escala com a largura da tela mantendo proporção
+   16:9, isso equivale a 0,625vw de largura de tela — não é chute).
+   Versão anterior usava 1.15vw, quase o dobro do valor correto. */
+.faixa-decorativa{
+  height:0.625vw;min-height:5px;max-height:14px;width:100%;margin:0;
+  background: linear-gradient(90deg,
+    var(--faixa-1) 0%, var(--faixa-1) 16.6%,
+    var(--faixa-2) 16.6%, var(--faixa-2) 33.2%,
+    var(--faixa-3) 33.2%, var(--faixa-3) 49.8%,
+    var(--faixa-4) 49.8%, var(--faixa-4) 66.4%,
+    var(--faixa-5) 66.4%, var(--faixa-5) 83%,
+    var(--faixa-6) 83%, var(--faixa-6) 100%);
+}
+
 .blob-decor{position:absolute;border-radius:50%;z-index:0;pointer-events:none;}
 
 /* ==========================================================================
-   2) CABEÇALHO (logo + botão "enviar projeto", SEM links de seção —
-      a navegação agora é só a barra de abas abaixo)
-   ========================================================================== */
-.site-header{
-  max-width:1180px;margin:0 auto;padding:20px 20px 0;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
-  position:relative;z-index:2;
-}
-.marca{display:flex;align-items:center;}
-.logo-real{height:40px;width:auto;display:block;}
-
-.btn-enviar{
-  background:var(--ink);color:#fff;border:none;border-radius:10px;
-  padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;
-  text-decoration:none;white-space:nowrap;
-}
-.btn-enviar:hover{opacity:.9;}
-
-/* ==========================================================================
-   3) BARRA DE ABAS — imita a barra de páginas do Looker Studio
+   2) BARRA DE ABAS — imita a barra de páginas do Looker Studio
    ========================================================================== */
 .tabs-relatorio{
   max-width:100%;
   margin:18px 0 0;
   padding:0 20px;
   display:flex;
+  align-items:flex-end;
+  height:58px;
   gap:26px;
   overflow-x:auto;
   white-space:nowrap;
@@ -96,6 +98,199 @@ body{
 }
 .tab-btn:hover{color:var(--ink);}
 .tab-btn.ativo{color:var(--rosa);border-bottom-color:var(--rosa);}
+
+/* ==========================================================================
+   2.1) FAIXA SUPERIOR — envolve a barra de abas + botão de acesso restrito.
+   Criada via JS (nav.js) para não precisar editar as 15 páginas.
+   ========================================================================== */
+.barra-superior{
+  display:flex;
+  align-items:center;
+  background:#fff;
+  border-bottom:1px solid var(--borda);
+  position:relative;
+  z-index:2;
+  flex-wrap:wrap;
+}
+.barra-superior .tabs-relatorio{
+  flex:1;
+  min-width:0;
+  border-bottom:none;
+  margin:0;
+}
+
+.botao-acesso{
+  flex:none;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0 20px 0 0;
+  padding:7px 14px;
+  font-family:inherit;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--rosa);
+  background:#fdf0f5;
+  border:1px solid #f6d3e2;
+  border-radius:100px;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background .15s ease;
+}
+.botao-acesso:hover{background:#fce3ee;}
+
+.selo-distrito{
+  flex:none;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0 0 0 20px;
+  padding:6px 13px;
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.3px;
+  text-transform:uppercase;
+  color:var(--azul);
+  background:#eaf5fc;
+  border:1px solid #cfe9f7;
+  border-radius:100px;
+  white-space:nowrap;
+}
+
+.link-voltar-admin{
+  flex:none;
+  display:flex;
+  align-items:center;
+  margin:0 10px 0 0;
+  text-decoration:none;
+}
+.link-voltar-admin .pill{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 14px;
+  font-family:inherit;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--azul);
+  background:#eaf5fc;
+  border:1px solid #cfe9f7;
+  border-radius:100px;
+  white-space:nowrap;
+  transition:background .15s ease;
+}
+.link-voltar-admin:hover .pill{background:#d8edfa;}
+
+.painel-admin{
+  max-width:640px;
+  margin:40px auto;
+  padding:0 20px;
+}
+.painel-admin h1{
+  font-size:28px;
+  font-weight:800;
+  color:var(--rosa);
+  margin:0 0 8px;
+}
+.painel-admin > p{
+  font-size:14px;
+  color:var(--ink-soft);
+  margin:0 0 24px;
+}
+.lista-admin-distritos{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+}
+.lista-admin-distritos a{
+  display:block;
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid var(--borda);
+  border-radius:10px;
+  color:var(--ink);
+  font-weight:700;
+  font-size:14px;
+  text-decoration:none;
+  text-align:center;
+  transition:border-color .15s ease, color .15s ease;
+}
+.lista-admin-distritos a:hover{border-color:var(--rosa);color:var(--rosa);}
+
+.acesso-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(31,31,30,0.55);
+  z-index:100;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.acesso-overlay.aberto{display:flex;}
+
+.acesso-modal{
+  position:relative;
+  width:100%;
+  max-width:360px;
+  background:#fff;
+  border-radius:16px;
+  padding:28px 24px 24px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+.acesso-modal h2{
+  margin:0 0 6px;
+  font-size:19px;
+  font-weight:800;
+  color:var(--ink);
+}
+.acesso-modal p{
+  margin:0 0 16px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+  line-height:1.4;
+}
+.acesso-fechar{
+  position:absolute;
+  top:12px;right:14px;
+  border:none;background:none;
+  font-size:22px;line-height:1;
+  color:var(--ink-soft);
+  cursor:pointer;
+}
+.acesso-input{
+  width:100%;
+  padding:11px 14px;
+  font-family:inherit;
+  font-size:14px;
+  border:1.5px solid var(--borda);
+  border-radius:10px;
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
+.acesso-input:focus{outline:none;border-color:var(--rosa);}
+.acesso-entrar{
+  width:100%;
+  padding:11px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
+  color:#fff;
+  background:var(--rosa);
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+.acesso-entrar:hover{opacity:.92;}
+.acesso-erro{
+  margin:10px 0 0;
+  font-size:12.5px;
+  color:#c0392b;
+  text-align:center;
+}
 
 /* ==========================================================================
    4) CAPA
@@ -140,18 +335,58 @@ body{
 .blob-decor.cb2{width:140px;height:140px;background:var(--verde);opacity:.10;bottom:0;right:2%;}
 
 /* ==========================================================================
+   4b) IMAGEM REAL DO CANVA — full-bleed, compartilhada por Equipe, Guia,
+   Sobre e Doação. Mesmo tratamento da capa (seção 4), por isso as regras
+   são idênticas às de ".capa"/".capa-imagem-real" — só nomes diferentes.
+   Só em telas grandes; abaixo de 900px o fallback em HTML assume.
+   ========================================================================== */
+.canva-full{
+  position:relative;overflow:hidden;
+  width:100%;margin:0;padding:0;
+}
+.canva-img{display:block;width:100%;height:auto;}
+@media (max-width:899px){
+  .canva-full{display:none;}
+}
+
+/* Botão real sobreposto a um botão que existe só como pixel na
+   imagem — mesma cor/texto do desenho original, mas clicável de
+   verdade (hover, foco por teclado, cursor de link). O font-size usa
+   vw pra escalar proporcionalmente à imagem em qualquer largura de
+   tela, já que a imagem também escala com width:100%. */
+.btn-overlay-real{
+  position:absolute;display:flex;align-items:center;justify-content:center;
+  border-radius:999px;color:#fff;font-weight:700;text-decoration:none;
+  font-size:clamp(12px, 1.4vw, 22px);letter-spacing:.2px;
+  transition:opacity .15s ease;
+}
+.btn-overlay-real:hover,
+.btn-overlay-real:focus-visible{opacity:.85;}
+.btn-overlay-real:focus-visible{outline:2px solid #fff;outline-offset:-4px;}
+
+/* ==========================================================================
    5) CONTAINER PADRÃO DAS PÁGINAS INTERNAS
    ========================================================================== */
 .pagina-conteudo{
   max-width:1180px;margin:0 auto;padding:44px 20px 64px;
   position:relative;z-index:1;
 }
-.secao-titulo{font-size:26px;font-weight:800;margin:0 0 8px;color:var(--ink);}
+/* Usada só em Projetos e Destaques — as duas páginas construídas do
+   zero (sem imagem do Canva). Remove o limite de 1180px pra ocupar a
+   largura toda da tela, igual às páginas com imagem (capa, equipe...),
+   que já são full-bleed por natureza. */
+.pagina-conteudo.pagina-conteudo-full{
+  max-width:100%;padding:44px 32px 64px;
+}
+.secao-titulo{font-size:38px;font-weight:800;margin:0 0 8px;color:var(--rosa);line-height:1.1;}
 .secao-desc{font-size:14.5px;color:var(--ink-soft);max-width:70ch;margin:0 0 28px;}
 
 .duas-colunas{display:grid;grid-template-columns:1.1fr 0.9fr;gap:40px;align-items:start;}
 .duas-colunas p{font-size:15px;line-height:1.65;color:var(--ink-soft);}
 .duas-colunas h3{font-size:16px;margin:20px 0 8px;color:var(--ink);}
+
+.sobre-wrap{max-width:1040px;margin:0 auto;}
+.secao-sobre{margin-bottom:44px;}
 
 .caixa-impacto{
   background:var(--bg-card);border:1px solid var(--borda);border-radius:16px;
@@ -174,9 +409,18 @@ body{
 /* ==========================================================================
    6) SUA DOAÇÃO TRANSFORMA
    ========================================================================== */
-.secao-doe{background:var(--bg-card);border-radius:20px;border:1px solid var(--borda);}
+.secao-doe{background:var(--bg-card);border-radius:20px;border:1px solid var(--borda);padding:32px 32px 40px;}
+.secao-doe .secao-titulo{margin-bottom:20px;font-size:30px;}
+.botoes-doe{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
 .tag-doe{margin-bottom:24px;}
-.tres-colunas{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+.tres-colunas{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.coluna-doe{
+  border:1px solid var(--borda);border-radius:12px;
+  padding:20px;background:#fff;border-top:3px solid var(--borda);
+}
+.coluna-doe:has(.titulo-azul){border-top-color:var(--azul);}
+.coluna-doe:has(.titulo-verde){border-top-color:var(--verde);}
+.coluna-doe:has(.titulo-roxo){border-top-color:var(--roxo);}
 .coluna-doe h4{
   font-size:13px;font-weight:700;color:#fff;padding:8px 14px;border-radius:6px;
   display:inline-block;margin:0 0 14px;
@@ -189,43 +433,123 @@ body{
 /* ==========================================================================
    7) DESTAQUES
    ========================================================================== */
-.grid-destaques{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;}
+.grid-destaques{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:22px;align-items:end;
+}
+.destaques-wrap{max-width:1040px;margin:0 auto;}
+.cabecalho-destaques{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;margin-bottom:28px;
+}
+.cabecalho-destaques .secao-titulo,
+.cabecalho-destaques .secao-desc{margin-bottom:0;}
+.destaques-filtro{display:flex;flex-direction:column;gap:6px;}
+.destaques-filtro label{font-size:12.5px;color:var(--ink-soft);font-weight:600;}
+.destaques-filtro select{
+  padding:9px 12px;border-radius:10px;border:1px solid #ddd;
+  background:#fff;font-size:13.5px;color:var(--ink);min-width:220px;
+}
+.aviso-modo-teste{
+  background:#fff3d6;border:1px solid #f0d38a;color:#8a5a00;
+  font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:10px;
+  margin-bottom:18px;
+}
+.destaques-proxima{
+  text-align:center;font-size:12.5px;color:#c0392b;font-weight:600;
+  margin:32px 0 0;padding-top:20px;border-top:1px solid var(--borda);
+}
 .card-destaque{
   background:var(--bg-card);border:1px solid var(--borda);border-radius:14px;
-  padding:24px 22px;position:relative;
+  padding:28px 22px 24px;position:relative;text-align:center;
 }
-.card-destaque h3{font-size:20px;margin:8px 0 2px;}
-.sub-destaque{font-size:13px;color:var(--ink-soft);margin:0 0 14px;}
-.card-destaque hr{border:none;border-top:1px solid var(--borda);margin:14px 0;}
-.motivo-titulo{font-size:13px;font-weight:700;margin:0 0 4px;}
-.motivo-texto{font-size:13px;color:var(--ink-soft);line-height:1.5;}
-.rotulo-destaque{font-size:12px;font-weight:700;color:var(--rosa);display:block;}
+.card-destaque h3{font-size:22px;margin:10px 0 4px;color:#d41367;}
+.destaque-valor{font-size:18px;font-weight:800;color:var(--ink);margin:0 0 12px;}
+.destaque-agradecimento{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0;}
 .medalha{
-  position:absolute;top:-14px;right:18px;font-size:11px;font-weight:700;
-  color:#fff;padding:4px 10px;border-radius:999px;
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  font-size:11px;font-weight:700;
+  color:#fff;padding:4px 12px;border-radius:999px;white-space:nowrap;
 }
 .medalha.ouro{background:#d4a017;}
 .medalha.prata{background:#9a9a9a;}
 .medalha.bronze{background:#a8622f;}
 
+/* Efeito pódio: o card do Ouro fica visualmente mais alto que os outros
+   dois — como align-items:end no grid alinha todo mundo pela base, basta
+   dar mais padding-bottom nele pra ele "crescer" pra cima. */
+.card-destaque.ouro{
+  padding-top:34px;padding-bottom:40px;
+  border-color:#d4a017;
+}
+.card-destaque.prata{border-color:#9a9a9a;}
+.card-destaque.bronze{border-color:#a8622f;}
+@media (max-width:700px){
+  .card-destaque.ouro{padding-bottom:24px;}
+}
+
 /* ==========================================================================
    8) EQUIPE
    ========================================================================== */
-.grid-equipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;}
-.membro-equipe{display:flex;gap:14px;}
-.membro-foto{
-  width:64px;height:64px;border-radius:50%;object-fit:cover;flex:none;
-  border:2px solid var(--rosa);background:#eee;
+.grid-equipe{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+@media (max-width:700px){
+  .grid-equipe{grid-template-columns:1fr;}
 }
-.membro-cargo{font-size:13px;font-weight:700;color:var(--rosa);margin:0 0 4px;}
-.membro-nome{font-size:14.5px;font-weight:700;margin:0;}
-.membro-info{font-size:12.5px;color:var(--ink-soft);margin:2px 0 6px;}
+.membro-equipe{
+  display:flex;flex-direction:row;align-items:center;text-align:left;
+  gap:20px;padding:20px 22px;
+  border:1px solid var(--borda);border-left:4px solid var(--rosa);
+  border-radius:10px;background:#fff;
+}
+.membro-foto{
+  width:112px;height:112px;border-radius:14px;object-fit:cover;flex:none;
+  background:#eee;
+}
+.membro-cargo{font-size:11.5px;font-weight:700;color:var(--rosa);margin:0;text-transform:uppercase;letter-spacing:.3px;}
+.membro-nome{font-size:16px;font-weight:700;margin:2px 0 0;}
+.membro-info{font-size:12px;color:var(--ink-soft);margin:2px 0 6px;}
 .membro-desc{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0;}
+
+/* Card do Diretor — mesmo tamanho dos demais, só que centralizado e
+   sozinho numa linha acima do grid de 2 colunas (não esticado). */
+.membro-equipe-centralizado{
+  display:flex;justify-content:center;
+  margin:0 0 20px;
+}
+.membro-equipe-centralizado .membro-equipe{
+  width:100%;
+  max-width:calc(50% - 10px);
+}
+@media (max-width:700px){
+  .membro-equipe-centralizado .membro-equipe{max-width:100%;}
+}
+
+/* Grid dinâmico — visível em qualquer tela.
+   TESTE: grid substituindo Canva (ver comentário em equipe.html). Antes,
+   esta regra escondia o grid em telas grandes pra dar lugar à imagem do
+   Canva. Removida de propósito — se quiser voltar ao esquema anterior,
+   restaure este bloco:
+   @media (min-width:900px){
+     .equipe-conteudo-fallback{
+       position:absolute !important;width:1px;height:1px;margin:-1px;
+       padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;
+       border:0;
+     }
+   }
+*/
+.equipe-conteudo-fallback{max-width:1040px;margin:0 auto;}
 
 /* ==========================================================================
    9) GALERIA DE PROJETOS
    ========================================================================== */
-.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;}
+.cabecalho-projetos{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;margin-bottom:8px;
+}
+.cabecalho-projetos .secao-titulo,
+.cabecalho-projetos .secao-desc{margin-bottom:8px;}
+
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:24px;margin-top:20px;}
 .toolbar label{font-size:13px;color:var(--ink-soft);font-weight:600;}
 select#filtro{
   padding:10px 14px;border-radius:10px;border:1px solid #ddd;
@@ -233,7 +557,11 @@ select#filtro{
 }
 .contador{font-size:13px;color:var(--ink-soft);}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
+.projetos-wrap{max-width:1400px;margin:0 auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+@media (min-width:1180px){
+  .grid{grid-template-columns:repeat(4,1fr);}
+}
 .card{
   background:var(--bg-card);border-radius:16px;overflow:hidden;
   border:1px solid var(--borda);display:flex;flex-direction:column;
@@ -276,8 +604,24 @@ select#filtro{
 /* ==========================================================================
    11) CONTATO
    ========================================================================== */
-.secao-contato h3{font-size:16px;margin:0 0 10px;}
-.secao-contato p{font-size:14px;color:var(--ink-soft);margin:0 0 8px;}
+.secao-contato p{font-size:15px;color:var(--ink-soft);line-height:1.6;max-width:70ch;margin:0 0 24px;}
+
+.contato-telefones{
+  display:flex;flex-direction:column;gap:6px;font-size:14px;
+  color:var(--ink-soft);margin-bottom:28px;
+}
+.contato-telefones strong{color:var(--ink);}
+
+/* Formulário do Google embutido de verdade — sem os problemas de
+   credencial/billing que tivemos com o Looker Studio. Altura fixa
+   porque o Google Forms não expõe altura responsiva nativamente; se
+   sobrar espaço em branco no fim ou faltar espaço, ajuste o valor
+   abaixo (foi calculado com margem sobre o valor medido no navegador). */
+.form-embed-wrap{
+  border-radius:16px;overflow:hidden;border:1px solid var(--borda);
+  background:#fff;max-width:760px;
+}
+.form-embed-wrap iframe{width:100%;height:1900px;border:0;display:block;}
 
 /* ==========================================================================
    12) PAINÉIS DE ESTATÍSTICA
@@ -293,13 +637,47 @@ select#filtro{
 .embed-wrap iframe{width:100%;height:820px;border:0;display:block;}
 .embed-aviso{font-size:12.5px;color:var(--ink-soft);margin-top:14px;}
 
+/* Layout expandido (Geral / Área 29 / Área 31) — mesmo espírito da
+   capa: ocupa a largura toda, sem título/aviso na página (o próprio
+   painel do Looker Studio já mostra o título internamente). */
+.embed-secao-full{width:100%;margin:0 0 40px;padding:0 20px;}
+.embed-wrap-full{border-radius:16px;}
+.embed-wrap-full iframe{height:88vh;min-height:640px;max-height:1100px;}
+@media (max-width:760px){
+  .embed-wrap-full iframe{height:70vh;min-height:480px;}
+}
+
+/* Aviso "gire o aparelho" — só em telas estreitas E na vertical. Some
+   sozinho se a pessoa girar pro modo paisagem (a media query re-avalia
+   automaticamente, sem precisar de JS). Fica oculto em qualquer página
+   que não tenha essa div (a maioria) e em desktop/tablet sempre. */
+.aviso-girar{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin:0 20px 14px;
+  padding:11px 16px;
+  font-size:13px;
+  font-weight:600;
+  color:#8a5a00;
+  background:#fff3d6;
+  border:1px solid #f0d38a;
+  border-radius:10px;
+  text-align:center;
+}
+@media (max-width:760px) and (orientation:portrait){
+  .aviso-girar{display:flex;}
+}
+
 /* ==========================================================================
    13) RODAPÉ
    ========================================================================== */
 .site-footer{
   max-width:1180px;margin:0 auto;padding:0 20px 40px;
-  font-size:12.5px;color:var(--ink-soft);position:relative;z-index:1;
+  position:relative;z-index:1;
 }
+.footer-copy{font-size:12.5px;color:var(--ink-soft);margin:0;}
 
 /* ==========================================================================
    14) RESPONSIVO
@@ -319,4 +697,106 @@ select#filtro{
   .toolbar{flex-direction:column;align-items:flex-start;}
   select#filtro{width:100%;}
   .capa-titulo{font-size:34px;}
+}
+
+/* ==========================================================================
+   15) BARRA SUPERIOR — RESPONSIVO
+   Precisa vir DEPOIS das regras base de .selo-distrito / .botao-acesso /
+   .link-voltar-admin (seção 2.1) pra realmente sobrescrevê-las — regras de
+   mesma especificidade, quem vem depois no arquivo vence, media query ou não.
+
+   Layout em telas estreitas: selo + botões (Sair / Ver outro distrito)
+   ficam juntos numa linha compacta no topo; as abas do menu (que já têm
+   scroll horizontal próprio) ficam sozinhas numa segunda linha, ocupando
+   a largura toda. Antes o selo é que virava linha inteira — ficava
+   esticado e feio; agora quem vira linha inteira é a barra de abas.
+   ========================================================================== */
+@media (max-width: 700px){
+  .selo-distrito{
+    order:1;
+    flex:none;
+    margin:8px 0 8px 16px;
+  }
+  .botao-acesso{
+    order:2;
+    flex:none;
+    margin:8px 16px 8px auto;
+    padding:6px 12px;
+    font-size:12px;
+  }
+  .link-voltar-admin{
+    order:3;
+    flex:1 0 calc(100% - 32px);
+    margin:0 16px 8px;
+    justify-content:flex-end;
+  }
+  .link-voltar-admin .pill{
+    padding:6px 12px;
+    font-size:12px;
+  }
+  .barra-superior .tabs-relatorio{
+    order:4;
+    flex:1 0 100%;
+    margin:0;
+  }
+}
+
+/* ==========================================================================
+   16) PROGRAMA DE RECONHECIMENTO
+   ========================================================================== */
+.reconhecimento-wrap{max-width:1040px;margin:0 auto;}
+
+.reconhecimento-cabecalho{margin-bottom:22px;}
+.reconhecimento-cabecalho .secao-desc{margin-bottom:12px;}
+.selo-periodo{
+  display:inline-block;font-size:12.5px;font-weight:700;color:var(--rosa);
+  background:#fdf0f5;border:1px solid #f6d3e2;padding:6px 14px;
+  border-radius:999px;
+}
+
+.reconhecimento-intro{
+  font-size:14.5px;color:var(--ink-soft);line-height:1.6;
+  max-width:78ch;margin:0 0 24px;
+}
+
+.aviso-criterio{
+  background:#fff3d6;border:1px solid #f0d38a;color:#6b4c00;
+  font-size:13.5px;line-height:1.6;padding:14px 18px;border-radius:10px;
+  margin:0 0 36px;
+}
+.aviso-criterio strong{color:#4a3400;}
+
+.reconhecimento-subtitulo{font-size:20px;font-weight:800;color:var(--rosa);margin:0 0 6px;}
+.reconhecimento-subtitulo-desc{font-size:13.5px;color:var(--ink-soft);margin:0 0 18px;}
+.reconhecimento-texto{font-size:13.5px;color:var(--ink-soft);line-height:1.6;max-width:78ch;margin:0 0 32px;}
+
+.grid-criterios{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;margin-bottom:36px;
+}
+.card-criterio{
+  background:#fff;border:1px solid var(--borda);border-radius:12px;
+  padding:20px;
+}
+.criterio-icone{font-size:22px;display:block;margin-bottom:8px;}
+.card-criterio h4{font-size:14.5px;font-weight:700;margin:0 0 4px;}
+.criterio-meta{font-size:15px;font-weight:800;color:var(--azul);margin:0 0 8px;}
+.criterio-desc{font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin:0;}
+
+.card-destaque-maximo{
+  background:linear-gradient(135deg,#fff8ea,#fff);
+  border:1.5px solid #d4a017;border-radius:14px;
+  padding:28px 26px;margin-bottom:20px;
+}
+.destaque-maximo-selo{
+  display:inline-block;font-size:12px;font-weight:700;color:#8a6a00;
+  background:#fff3d6;border:1px solid #f0d38a;padding:5px 12px;
+  border-radius:999px;margin-bottom:12px;
+}
+.card-destaque-maximo h3{font-size:20px;font-weight:800;color:var(--ink);margin:0 0 10px;}
+.card-destaque-maximo p{font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin:0 0 14px;max-width:78ch;}
+.destaque-maximo-lista{margin:0;padding-left:20px;font-size:13.5px;color:var(--ink-soft);line-height:1.8;}
+
+@media (max-width:700px){
+  .reconhecimento-wrap{padding:0 4px;}
 }
