@@ -99,6 +99,28 @@ body{
 .tab-btn:hover{color:var(--ink);}
 .tab-btn.ativo{color:var(--rosa);border-bottom-color:var(--rosa);}
 
+/* Dropdown "Estatísticas" — agrupa as 4 abas de estatística que antes
+   ficavam soltas na barra, competindo por espaço com o resto do menu. */
+.tab-dropdown{position:relative;flex:none;}
+.tab-dropdown-toggle{
+  background:none;border:none;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;gap:4px;
+}
+.tab-dropdown-seta{font-size:10px;position:relative;top:1px;}
+.tab-dropdown.aberto .tab-dropdown-toggle{color:var(--rosa);}
+.tab-dropdown-menu{
+  display:none;position:fixed;background:#fff;border:1px solid var(--borda);
+  border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);
+  padding:6px;min-width:280px;z-index:50;flex-direction:column;gap:2px;
+}
+.tab-dropdown.aberto .tab-dropdown-menu{display:flex;}
+.tab-dropdown-item{
+  display:block;padding:9px 12px;border-radius:6px;font-size:13.5px;
+  font-weight:600;color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+}
+.tab-dropdown-item:hover{background:#f5f5f4;color:var(--ink);}
+.tab-dropdown-item.ativo{color:var(--rosa);background:#fdf0f5;}
+
 /* ==========================================================================
    2.1) FAIXA SUPERIOR — envolve a barra de abas + botão de acesso restrito.
    Criada via JS (nav.js) para não precisar editar as 15 páginas.
@@ -111,12 +133,21 @@ body{
   position:relative;
   z-index:2;
   flex-wrap:wrap;
+  /* Antes a altura vinha "de graça" da barra de abas (58px). Com ela
+     escondida (hambúrguer sempre ativo agora), a barra ficaria fina
+     demais sem isso. */
+  min-height:58px;
 }
 .barra-superior .tabs-relatorio{
   flex:1;
   min-width:0;
   border-bottom:none;
   margin:0;
+  /* Substituído pelo hambúrguer em qualquer tamanho de tela — ver
+     .menu-hamburguer logo abaixo. Escondido, não removido, porque o
+     nav.js ainda monta o conteúdo dele (inclui o dropdown de
+     Estatísticas), só que ele nunca fica visível agora. */
+  display:none;
 }
 
 .botao-acesso{
@@ -124,7 +155,7 @@ body{
   display:flex;
   align-items:center;
   gap:6px;
-  margin:0 20px 0 0;
+  margin:0 20px 0 auto;
   padding:7px 14px;
   font-family:inherit;
   font-size:12.5px;
@@ -137,6 +168,17 @@ body{
   white-space:nowrap;
   transition:background .15s ease;
 }
+/* Quando "Ver outro distrito" vem logo antes do "Sair", é ELE quem
+   empurra os dois pra direita (ver .link-voltar-admin) — o Sair aqui
+   não deve ter a própria margem automática, senão o espaço livre fica
+   dividido entre os dois em vez de ficarem colados.
+   Só no desktop: no mobile (ver media query mais abaixo) os dois ficam
+   em linhas diferentes de propósito, então essa regra não deve valer lá. */
+@media (min-width:701px){
+  .link-voltar-admin + .botao-acesso{
+    margin-left:0;
+  }
+}
 .botao-acesso:hover{background:#fce3ee;}
 
 .selo-distrito{
@@ -145,15 +187,13 @@ body{
   align-items:center;
   gap:6px;
   margin:0 0 0 20px;
-  padding:6px 13px;
-  font-size:11.5px;
+  padding:0 0 0 20px;
+  border-left:1px solid var(--borda);
+  font-size:12px;
   font-weight:700;
   letter-spacing:.3px;
   text-transform:uppercase;
-  color:var(--azul);
-  background:#eaf5fc;
-  border:1px solid #cfe9f7;
-  border-radius:100px;
+  color:var(--rosa);
   white-space:nowrap;
 }
 
@@ -161,9 +201,14 @@ body{
   flex:none;
   display:flex;
   align-items:center;
-  margin:0 10px 0 0;
+  margin:0 10px 0 auto;
   text-decoration:none;
 }
+/* Nota: essa é a margem que empurra o par [Ver outro distrito, Sair]
+   pra direita, já que .botao-acesso vem logo depois no DOM e não
+   precisa (nem deve) ter a própria margem automática aqui — se os dois
+   tiverem margin-left:auto, o espaço livre fica dividido entre eles em
+   vez de colar os dois juntos na ponta. */
 .link-voltar-admin .pill{
   display:flex;
   align-items:center;
@@ -414,6 +459,7 @@ body{
 .botoes-doe{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
 .tag-doe{margin-bottom:24px;}
 .tres-colunas{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.quatro-colunas{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:20px;}
 .coluna-doe{
   border:1px solid var(--borda);border-radius:12px;
   padding:20px;background:#fff;border-top:3px solid var(--borda);
@@ -431,6 +477,31 @@ body{
 .coluna-doe p{font-size:14px;color:var(--ink-soft);line-height:1.6;}
 
 /* ==========================================================================
+   6b) DISTRITOS E ÁREAS NO BRASIL (dentro de Sobre)
+   ========================================================================== */
+.secao-distritos{margin-top:44px;}
+.secao-desc-sobre{font-size:14px;color:var(--ink-soft);line-height:1.6;max-width:70ch;margin:0 0 24px;}
+.mapa-distrito{
+  margin:0;background:var(--bg-card);border:1px solid var(--borda);
+  border-radius:16px;padding:16px;text-align:center;
+}
+.mapa-distrito img{width:100%;height:auto;border-radius:10px;display:block;}
+.mapa-distrito figcaption{font-size:13px;color:var(--ink-soft);margin-top:10px;}
+/* Mapa único (não é mais grid de 2): largura máxima pra não esticar até
+   ocupar a página inteira num container full-bleed, centralizado.
+   Atualizado p/ o mapa com legenda lateral (31 distritos nomeados):
+   em 560px o texto da legenda ficava ilegível, então o mapa passou
+   a ocupar a largura do container (.sobre-wrap, 1040px). */
+.mapa-distrito-unico{max-width:960px;margin:0 auto;}
+/* Abaixo de 900px o mapa encolheria a ponto de a legenda de 31 distritos
+   ficar ilegível. Em vez de espremer o texto, trava a largura da imagem
+   e deixa a figura rolar na horizontal (padrão comum p/ infográfico denso). */
+@media (max-width:900px){
+  .mapa-distrito-unico{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .mapa-distrito-unico img{width:900px;max-width:none;}
+}
+
+/* ==========================================================================
    7) DESTAQUES
    ========================================================================== */
 .grid-destaques{
@@ -440,7 +511,7 @@ body{
 .destaques-wrap{max-width:1040px;margin:0 auto;}
 .cabecalho-destaques{
   display:flex;align-items:flex-start;justify-content:space-between;
-  gap:16px;flex-wrap:wrap;margin-bottom:28px;
+  gap:16px;flex-wrap:wrap;margin-bottom:72px;
 }
 .cabecalho-destaques .secao-titulo,
 .cabecalho-destaques .secao-desc{margin-bottom:0;}
@@ -455,7 +526,7 @@ body{
   font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:10px;
   margin-bottom:18px;
 }
-.destaques-proxima{
+.destaques-atualizacao{
   text-align:center;font-size:12.5px;color:#c0392b;font-weight:600;
   margin:32px 0 0;padding-top:20px;border-top:1px solid var(--borda);
 }
@@ -474,6 +545,17 @@ body{
 .medalha.ouro{background:#d4a017;}
 .medalha.prata{background:#9a9a9a;}
 .medalha.bronze{background:#a8622f;}
+
+/* Troféu acima da etiqueta — usa a mesma cor de cada categoria (ouro/
+   prata/bronze), só que aplicada via "color" (o SVG usa fill:currentColor). */
+.trofeu{
+  position:absolute;top:-62px;left:50%;transform:translateX(-50%);
+  width:36px;height:36px;
+}
+.trofeu svg{width:100%;height:100%;display:block;}
+.trofeu.ouro{color:#d4a017;}
+.trofeu.prata{color:#9a9a9a;}
+.trofeu.bronze{color:#a8622f;}
 
 /* Efeito pódio: o card do Ouro fica visualmente mais alto que os outros
    dois — como align-items:end no grid alinha todo mundo pela base, basta
@@ -685,7 +767,11 @@ select#filtro{
 @media (max-width:900px){
   .duas-colunas{grid-template-columns:1fr;}
   .tres-colunas{grid-template-columns:1fr;}
+  .quatro-colunas{grid-template-columns:repeat(2,1fr);}
   .capa-titulo{font-size:42px;}
+}
+@media (max-width:560px){
+  .quatro-colunas{grid-template-columns:1fr;}
 }
 
 @media (max-width:760px){
@@ -700,18 +786,19 @@ select#filtro{
 }
 
 /* ==========================================================================
-   15) BARRA SUPERIOR — RESPONSIVO
+   15) BARRA SUPERIOR — RESPONSIVO (telas estreitas)
    Precisa vir DEPOIS das regras base de .selo-distrito / .botao-acesso /
    .link-voltar-admin (seção 2.1) pra realmente sobrescrevê-las — regras de
    mesma especificidade, quem vem depois no arquivo vence, media query ou não.
 
-   Layout em telas estreitas: selo + botões (Sair / Ver outro distrito)
-   ficam juntos numa linha compacta no topo; as abas do menu (que já têm
-   scroll horizontal próprio) ficam sozinhas numa segunda linha, ocupando
-   a largura toda. Antes o selo é que virava linha inteira — ficava
-   esticado e feio; agora quem vira linha inteira é a barra de abas.
+   O hambúrguer (e a barra de abas escondida) já são assim em QUALQUER
+   tamanho de tela — ver .menu-hamburguer / .barra-superior .tabs-relatorio
+   na seção 2.1, não depende deste media query. Esta seção aqui cuida só
+   de comprimir selo + botões (Sair / Ver outro distrito) numa linha
+   compacta quando a tela é estreita (isso sim é específico de mobile).
    ========================================================================== */
 @media (max-width: 700px){
+  .navbar-logo img{height:28px;}
   .selo-distrito{
     order:1;
     flex:none;
@@ -734,12 +821,62 @@ select#filtro{
     padding:6px 12px;
     font-size:12px;
   }
-  .barra-superior .tabs-relatorio{
-    order:4;
-    flex:1 0 100%;
-    margin:0;
-  }
 }
+
+/* Botão hambúrguer — agora é o menu principal em qualquer tamanho de
+   tela (decisão explícita: substitui de vez a barra de abas horizontal,
+   não é mais um recurso "só mobile"). */
+.menu-hamburguer{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:none;border:none;cursor:pointer;color:var(--ink);
+  padding:8px;margin:0 4px 0 12px;flex:none;
+}
+
+/* Logo — preenche o espaço que sobrou na barra depois que o menu de
+   abas virou hambúrguer. Altura fixa (a original é bem larga: 974×373),
+   largura acompanha proporcionalmente. */
+.navbar-logo{
+  display:flex;align-items:center;flex:none;margin:0 4px;
+}
+.navbar-logo img{height:38px;width:auto;display:block;}
+
+/* Painel lateral do menu mobile — mesma linguagem visual do modal de
+   acesso (fundo escurecido + painel branco), só que lateral e com lista
+   de navegação em vez de formulário. */
+.menu-mobile-overlay{
+  display:none;position:fixed;inset:0;background:rgba(31,31,30,.55);
+  z-index:100;
+}
+.menu-mobile-overlay.aberto{display:block;}
+.menu-mobile-painel{
+  position:absolute;top:0;left:0;bottom:0;width:min(300px,84vw);
+  background:#fff;box-shadow:0 0 30px rgba(0,0,0,.25);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
+.menu-mobile-cabecalho{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--borda);
+  position:sticky;top:0;background:#fff;
+}
+.menu-mobile-cabecalho strong{font-size:14px;color:var(--ink);}
+.menu-mobile-fechar{
+  background:none;border:none;cursor:pointer;color:var(--ink-soft);
+  font-size:22px;line-height:1;padding:4px 8px;
+}
+.menu-mobile-link{
+  display:block;padding:13px 20px;font-size:14.5px;font-weight:600;
+  color:var(--ink-soft);text-decoration:none;
+}
+.menu-mobile-link:hover{background:#f5f5f4;}
+.menu-mobile-link.ativo{color:var(--rosa);background:#fdf0f5;}
+.menu-mobile-subtitulo{
+  padding:16px 20px 4px;font-size:11px;font-weight:800;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-soft);opacity:.65;margin:0;
+}
+.menu-mobile-sublink{padding-left:34px;}
+
 
 /* ==========================================================================
    16) PROGRAMA DE RECONHECIMENTO

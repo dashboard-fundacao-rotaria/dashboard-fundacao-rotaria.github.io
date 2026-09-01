@@ -11,11 +11,13 @@ const TABS = [
   { href: "reconhecimento.html", label: "Programa de Reconhecimento" },
   { href: "sobre.html", label: "Sobre a Fundação Rotária" },
   { href: "projetos.html", label: "Projetos por Área de Enfoque" },
-  { href: "estat-geral.html", label: "Total de contribuição dos distritos do Brasil" },
-  { href: "estat-area29.html", label: "Total de contribuição - Área 29" },
-  { href: "estat-area31.html", label: "Total de contribuição - Área 31" },
-  { href: "estat-fundo.html", label: "Doações por Fundo" },
-  { href: "rotary-direct.html", label: "QTD Rotary Direct" },
+  { label: "Estatísticas", grupo: [
+      { href: "estat-geral.html", label: "Total de contribuição dos distritos do Brasil" },
+      { href: "estat-area29.html", label: "Total de contribuição - Área 29" },
+      { href: "estat-area31.html", label: "Total de contribuição - Área 31" },
+      { href: "estat-fundo.html", label: "Doações por Fundo" }
+  ]},
+  { href: "rotary-direct.html", label: "Rotary Direct" },
   { href: "abtrf.html", label: "ABTRF" },
   { href: "campanhas.html", label: "Campanhas" },
   { href: "contato.html", label: "Fale Conosco" }
@@ -142,9 +144,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const ehPaginaAdmin = !!(scriptAtual && scriptAtual.dataset.admin === '1');
 
   nav.innerHTML = TABS.map(t => {
+    if (t.grupo) {
+      // Item de grupo (dropdown): fica "ativo" se a página atual for
+      // qualquer uma das páginas dentro do grupo.
+      const algumAtivo = t.grupo.some(sub => sub.href === paginaAtual);
+      const itensMenu = t.grupo.map(sub => {
+        const subAtivo = sub.href === paginaAtual ? ' ativo' : '';
+        return `<a href="${prefixo}${sub.href}" class="tab-dropdown-item${subAtivo}">${sub.label}</a>`;
+      }).join('');
+      return `
+        <div class="tab-dropdown">
+          <button type="button" class="tab-btn tab-dropdown-toggle${algumAtivo ? ' ativo' : ''}">
+            ${t.label} <span class="tab-dropdown-seta">&#9662;</span>
+          </button>
+          <div class="tab-dropdown-menu">${itensMenu}</div>
+        </div>`;
+    }
     const ativo = t.href === paginaAtual ? ' ativo' : '';
     return `<a href="${prefixo}${t.href}" class="tab-btn${ativo}">${t.label}</a>`;
   }).join('');
+
+  // Dropdown de Estatísticas: abre/fecha ao clicar, fecha clicando fora
+  // ou apertando Esc. Cada <div class="tab-dropdown"> cuida do seu
+  // próprio estado (dá pra ter mais de um grupo no futuro sem conflito).
+  nav.querySelectorAll('.tab-dropdown').forEach(dropdown => {
+    const toggle = dropdown.querySelector('.tab-dropdown-toggle');
+    const menu = dropdown.querySelector('.tab-dropdown-menu');
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const jaAberto = dropdown.classList.contains('aberto');
+      nav.querySelectorAll('.tab-dropdown.aberto').forEach(d => d.classList.remove('aberto'));
+      if (jaAberto) return;
+      // position:fixed calculado na hora de abrir, não CSS puro (absolute)
+      // — porque .tabs-relatorio tem overflow-x:auto, e isso faz o
+      // navegador recortar overflow vertical também (efeito colateral
+      // conhecido do CSS), cortando o menu se ele fosse absolute dentro
+      // dela. Fixed com coordenadas calculadas por JS escapa desse corte.
+      const rect = toggle.getBoundingClientRect();
+      menu.style.top = `${rect.bottom + 4}px`;
+      menu.style.left = `${rect.left}px`;
+      dropdown.classList.add('aberto');
+    });
+  });
+  document.addEventListener('click', () => {
+    nav.querySelectorAll('.tab-dropdown.aberto').forEach(d => d.classList.remove('aberto'));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      nav.querySelectorAll('.tab-dropdown.aberto').forEach(d => d.classList.remove('aberto'));
+    }
+  });
+  // Fecha o dropdown se a barra rolar enquanto ele está aberto — a posição
+  // é fixa (calculada uma vez, na abertura), então não acompanharia o
+  // scroll e ficaria desalinhada do botão.
+  nav.addEventListener('scroll', () => {
+    nav.querySelectorAll('.tab-dropdown.aberto').forEach(d => d.classList.remove('aberto'));
+  });
 
   // Envolve a barra de abas numa faixa que também comporta o botão de
   // acesso à direita, fixo (não rola junto com as abas).
@@ -152,6 +207,73 @@ document.addEventListener('DOMContentLoaded', () => {
   barra.className = 'barra-superior';
   nav.parentNode.insertBefore(barra, nav);
   barra.appendChild(nav);
+
+  // ==========================================================================
+  // MENU HAMBÚRGUER (mobile) — em telas estreitas, a barra de abas some
+  // (ver CSS, @media max-width:900px) e esse botão assume no lugar dela,
+  // abrindo um painel lateral com a mesma lista TABS (incluindo o grupo
+  // "Estatísticas", mostrado com subtítulo + itens indentados — sem
+  // dropdown aninhado dentro do painel, pra não exigir dois toques).
+  // ==========================================================================
+  const hamburguer = document.createElement('button');
+  hamburguer.type = 'button';
+  hamburguer.className = 'menu-hamburguer';
+  hamburguer.setAttribute('aria-label', 'Abrir menu');
+  hamburguer.setAttribute('aria-expanded', 'false');
+  hamburguer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+  barra.insertBefore(hamburguer, barra.firstChild);
+
+  // Logo — a barra ficou vazia depois que o menu de abas virou hambúrguer
+  // sempre ativo. Fica clicável e leva pra Início, como é convenção em
+  // quase todo site. EXCETO na própria capa (index.html): lá o logo já
+  // aparece grande no conteúdo da página, ficaria redundante repetir
+  // ele também na navbar.
+  if (paginaAtual !== 'index.html') {
+    const logoLink = document.createElement('a');
+    logoLink.className = 'navbar-logo';
+    logoLink.href = prefixo + 'index.html';
+    logoLink.setAttribute('aria-label', 'Ir para o início');
+    logoLink.innerHTML = `<img src="${prefixo}assets/logo/rotaract-rotary-logo-navbar.png" alt="Rotaract Brasil · Fundação Rotária">`;
+    barra.insertBefore(logoLink, hamburguer.nextSibling);
+  }
+
+  const itensMenuMobile = TABS.map(t => {
+    if (t.grupo) {
+      const subitens = t.grupo.map(sub => {
+        const subAtivo = sub.href === paginaAtual ? ' ativo' : '';
+        return `<a href="${prefixo}${sub.href}" class="menu-mobile-link menu-mobile-sublink${subAtivo}">${sub.label}</a>`;
+      }).join('');
+      return `<p class="menu-mobile-subtitulo">${t.label}</p>${subitens}`;
+    }
+    const ativo = t.href === paginaAtual ? ' ativo' : '';
+    return `<a href="${prefixo}${t.href}" class="menu-mobile-link${ativo}">${t.label}</a>`;
+  }).join('');
+
+  const menuMobile = document.createElement('div');
+  menuMobile.className = 'menu-mobile-overlay';
+  menuMobile.innerHTML = `
+    <div class="menu-mobile-painel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="menu-mobile-cabecalho">
+        <strong>Menu</strong>
+        <button type="button" class="menu-mobile-fechar" aria-label="Fechar menu">&times;</button>
+      </div>
+      <nav aria-label="Navegação do relatório (mobile)">${itensMenuMobile}</nav>
+    </div>`;
+  document.body.appendChild(menuMobile);
+
+  function abrirMenuMobile() {
+    menuMobile.classList.add('aberto');
+    hamburguer.setAttribute('aria-expanded', 'true');
+  }
+  function fecharMenuMobile() {
+    menuMobile.classList.remove('aberto');
+    hamburguer.setAttribute('aria-expanded', 'false');
+  }
+  hamburguer.addEventListener('click', abrirMenuMobile);
+  menuMobile.querySelector('.menu-mobile-fechar').addEventListener('click', fecharMenuMobile);
+  // Fecha ao tocar no fundo escurecido, mas não ao tocar dentro do painel.
+  menuMobile.addEventListener('click', (e) => { if (e.target === menuMobile) fecharMenuMobile(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharMenuMobile(); });
 
   // Se estamos carregando o próprio painel do admin agora, marca a sessão
   // como "modo admin" AQUI — e não na hora do login. Assim nenhuma parte
@@ -163,19 +285,15 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.setItem('paginaAdmin', paginaAtual);
   }
 
-  // Selo — indica área restrita. Mostra o número do distrito quando a
-  // própria página o declara (data-distrito); no painel do admin, mostra
-  // um selo diferente.
-  if (estaEmDistrito) {
+  // Selo — indica área restrita, com o número do distrito quando a
+  // própria página o declara (data-distrito). No painel do admin NÃO
+  // mostra selo — a página já tem seu próprio título "Painel do
+  // Administrador" no corpo, um selo repetindo isso na navbar era
+  // redundante.
+  if (estaEmDistrito && !ehPaginaAdmin) {
     const selo = document.createElement('span');
     selo.className = 'selo-distrito';
-    if (ehPaginaAdmin) {
-      selo.textContent = 'Painel do Administrador';
-    } else if (numeroDistrito) {
-      selo.textContent = `Visão - Distrito ${numeroDistrito}`;
-    } else {
-      selo.textContent = 'Visão de Distrito';
-    }
+    selo.textContent = numeroDistrito ? `Visão - Distrito ${numeroDistrito}` : 'Visão de Distrito';
     barra.insertBefore(selo, nav);
   }
 
@@ -193,8 +311,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function centralizarAbaAtiva() {
     const abaAtiva = nav.querySelector('.tab-btn.ativo');
     if (!abaAtiva) return;
-    const alvo = abaAtiva.offsetLeft - (nav.clientWidth / 2) + (abaAtiva.clientWidth / 2);
-    nav.scrollLeft = Math.max(0, alvo);
+    // getBoundingClientRect (não offsetLeft) porque o botão do dropdown de
+    // Estatísticas agora fica dentro de um wrapper com position:relative —
+    // offsetLeft seria relativo a esse wrapper, não à barra toda.
+    const navRect = nav.getBoundingClientRect();
+    const abaRect = abaAtiva.getBoundingClientRect();
+    const deltaCentro = (abaRect.left + abaRect.width / 2) - (navRect.left + navRect.width / 2);
+    nav.scrollLeft = Math.max(0, nav.scrollLeft + deltaCentro);
   }
 
   if (document.fonts && document.fonts.ready) {
