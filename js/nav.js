@@ -1,7 +1,7 @@
 // ============================================================================
 // MENU DE NAVEGAÇÃO — fonte única de verdade.
 // Para adicionar, remover, renomear ou reordenar uma aba, edite SÓ a lista
-// abaixo. Todas as 15 páginas puxam o menu daqui automaticamente — não
+// abaixo. Todas as 14 páginas puxam o menu daqui automaticamente — não
 // precisa editar o HTML de cada arquivo.
 // ============================================================================
 const TABS = [
@@ -11,7 +11,6 @@ const TABS = [
   { href: "reconhecimento.html", label: "Programa de Reconhecimento" },
   { href: "sobre.html", label: "Sobre a Fundação Rotária" },
   { href: "projetos.html", label: "Projetos por Área de Enfoque" },
-  { href: "distritos.html", label: "Distritos" },
   { label: "Estatísticas", grupo: [
       { href: "estat-geral.html", label: "Total de contribuição dos distritos do Brasil" },
       { href: "estat-area29.html", label: "Total de contribuição - Área 29" },
@@ -80,13 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const scriptAtual = document.querySelector('script[data-pagina-atual]');
   const paginaAtual = scriptAtual ? scriptAtual.dataset.paginaAtual : '';
 
-  // Detecta se esta página está dentro de uma subpasta (ex: distritos/) pra
-  // saber se os links do menu precisam de "../" na frente. Faz isso lendo o
-  // próprio src do <script src="js/nav.js"> ou "../js/nav.js" — não depende
-  // de nada além do que já está no HTML.
+  // Detecta se esta página está dentro de uma subpasta pra saber se os
+  // links do menu precisam de "../" na frente. Faz isso lendo o próprio
+  // src do <script src="js/nav.js"> ou "../js/nav.js" — não depende de
+  // nada além do que já está no HTML. Hoje nenhuma página fica em
+  // subpasta, mas mantém isso genérico pra não quebrar se uma nova
+  // seção precisar (a lógica não é específica de nenhuma pasta).
   const prefixo = scriptAtual && scriptAtual.getAttribute('src').startsWith('../') ? '../' : '';
-  const estaEmDistrito = prefixo === '../';
-  const numeroDistrito = scriptAtual ? scriptAtual.dataset.distrito : undefined;
 
   nav.innerHTML = TABS.map(t => {
     if (t.grupo) {
@@ -205,16 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Fecha ao tocar no fundo escurecido, mas não ao tocar dentro do painel.
   menuMobile.addEventListener('click', (e) => { if (e.target === menuMobile) fecharMenuMobile(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharMenuMobile(); });
-
-  // Selo — não indica mais "área restrita" (o login foi removido do
-  // projeto); serve só de identidade visual, mostrando de qual distrito é
-  // a página quando ela declara data-distrito.
-  if (estaEmDistrito && numeroDistrito) {
-    const selo = document.createElement('span');
-    selo.className = 'selo-distrito';
-    selo.textContent = `Visão - Distrito ${numeroDistrito}`;
-    barra.insertBefore(selo, nav);
-  }
 
   montarWidgetCambio(barra, prefixo);
 

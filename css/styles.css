@@ -164,63 +164,6 @@ body{
   cursor:help;
 }
 
-.selo-distrito{
-  flex:none;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin:0 0 0 20px;
-  padding:6px 13px;
-  font-size:11.5px;
-  font-weight:700;
-  letter-spacing:.3px;
-  text-transform:uppercase;
-  color:var(--azul);
-  background:#eaf5fc;
-  border:1px solid #cfe9f7;
-  border-radius:100px;
-  white-space:nowrap;
-}
-
-.painel-admin{
-  max-width:640px;
-  margin:40px auto;
-  padding:0 20px;
-}
-.painel-admin h1{
-  font-size:28px;
-  font-weight:800;
-  color:var(--rosa);
-  margin:0 0 8px;
-}
-.painel-admin > p{
-  font-size:14px;
-  color:var(--ink-soft);
-  margin:0 0 24px;
-}
-.lista-admin-distritos{
-  list-style:none;
-  margin:0;
-  padding:0;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:10px;
-}
-.lista-admin-distritos a{
-  display:block;
-  padding:12px 14px;
-  background:#fff;
-  border:1px solid var(--borda);
-  border-radius:10px;
-  color:var(--ink);
-  font-weight:700;
-  font-size:14px;
-  text-decoration:none;
-  text-align:center;
-  transition:border-color .15s ease, color .15s ease;
-}
-.lista-admin-distritos a:hover{border-color:var(--rosa);color:var(--rosa);}
-
 /* ==========================================================================
    PORTÃO DE ENTRADA (obrigatório, sem X/clique-fora/Esc) e MODAL DE VÍDEO
    (esse sim fechável) — ver js/portao-entrada.js.
@@ -789,21 +732,16 @@ select#filtro{
 
 /* ==========================================================================
    15) BARRA SUPERIOR — RESPONSIVO (telas estreitas)
-   Precisa vir DEPOIS das regras base de .selo-distrito / .widget-cambio
-   (seção 2.1) pra realmente sobrescrevê-las — regras de mesma
-   especificidade, quem vem depois no arquivo vence, media query ou não.
+   Precisa vir DEPOIS das regras base de .widget-cambio (seção 2.1) pra
+   realmente sobrescrevê-las — regras de mesma especificidade, quem vem
+   depois no arquivo vence, media query ou não.
 
    O hambúrguer (e a barra de abas escondida) já são assim em QUALQUER
    tamanho de tela — ver .menu-hamburguer / .barra-superior .tabs-relatorio
    na seção 2.1, não depende deste media query. Esta seção aqui cuida só
-   de comprimir selo + widget numa linha compacta quando a tela é estreita.
+   de comprimir o widget numa linha compacta quando a tela é estreita.
    ========================================================================== */
 @media (max-width: 700px){
-  .selo-distrito{
-    order:1;
-    flex:none;
-    margin:8px 0 8px 16px;
-  }
   .widget-cambio{
     order:2;
     flex:none;
