@@ -167,6 +167,20 @@ document.addEventListener('DOMContentLoaded', () => {
   hamburguer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
   barra.insertBefore(hamburguer, barra.firstChild);
 
+  // Logo — a barra ficou vazia depois que o menu de abas virou hambúrguer
+  // sempre ativo. Fica clicável e leva pra Início, como é convenção em
+  // quase todo site. EXCETO na própria capa (index.html): lá o logo já
+  // aparece grande no conteúdo da página, ficaria redundante repetir
+  // ele também na navbar.
+  if (paginaAtual !== 'index.html') {
+    const logoLink = document.createElement('a');
+    logoLink.className = 'navbar-logo';
+    logoLink.href = prefixo + 'index.html';
+    logoLink.setAttribute('aria-label', 'Ir para o início');
+    logoLink.innerHTML = `<img src="${prefixo}assets/logo/rotaract-rotary-logo-navbar.png" alt="Rotaract Brasil · Fundação Rotária">`;
+    barra.insertBefore(logoLink, hamburguer.nextSibling);
+  }
+
   const itensMenuMobile = TABS.map(t => {
     if (t.grupo) {
       const subitens = t.grupo.map(sub => {
