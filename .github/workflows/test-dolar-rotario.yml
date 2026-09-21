@@ -1,0 +1,22 @@
+name: Testar script do Dólar Rotário
+
+on:
+  push:
+    paths:
+      - ".github/scripts/atualizar_dolar_rotario.py"
+      - ".github/scripts/test_atualizar_dolar_rotario.py"
+      - ".github/scripts/fixtures/**"
+  pull_request:
+    paths:
+      - ".github/scripts/atualizar_dolar_rotario.py"
+      - ".github/scripts/test_atualizar_dolar_rotario.py"
+      - ".github/scripts/fixtures/**"
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rodar testes contra o HTML de exemplo (sem acessar o site real)
+        run: python3 -m unittest discover -s .github/scripts -p "test_*.py" -v

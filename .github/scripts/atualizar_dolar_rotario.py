@@ -18,11 +18,19 @@ Actions aparece como falho e alguém precisa olhar/ajustar o regex abaixo.
 import json
 import re
 import sys
+import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
 URL = "https://rotary.org.br/"
 DESTINO = "assets/dolar-rotario.json"
+TENTATIVAS = 3
+BACKOFF_SEGUNDOS = 5  # 5s, 10s, 20s entre tentativas
+
+# Faixa plausível pro câmbio USD/BRL. Serve só pra pegar erro de parsing
+# silencioso (ex.: casas decimais trocadas) — não é previsão econômica.
+VALOR_MIN, VALOR_MAX = 0.5, 20.0
 
 PADRAO = re.compile(
     r'class="dolar"[^>]*>.*?<td[^>]*>\s*'
@@ -33,8 +41,22 @@ PADRAO = re.compile(
 
 def buscar_html(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    ultimo_erro = None
+    for tentativa in range(1, TENTATIVAS + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                return resp.read().decode("utf-8", errors="replace")
+        except (urllib.error.URLError, TimeoutError) as erro:
+            ultimo_erro = erro
+            if tentativa < TENTATIVAS:
+                espera = BACKOFF_SEGUNDOS * (2 ** (tentativa - 1))
+                print(
+                    f"Tentativa {tentativa}/{TENTATIVAS} falhou ({erro}); "
+                    f"esperando {espera}s...",
+                    file=sys.stderr,
+                )
+                time.sleep(espera)
+    raise ultimo_erro
 
 
 def extrair(html: str):
@@ -45,12 +67,33 @@ def extrair(html: str):
     valor_bruto = m.group(2).strip()
     # "5,19" -> 5.19 (formato BR pra float)
     valor = float(valor_bruto.replace(".", "").replace(",", "."))
+    if not (VALOR_MIN < valor < VALOR_MAX):
+        raise ValueError(
+            f"valor extraído ({valor}) fora da faixa plausível "
+            f"({VALOR_MIN}-{VALOR_MAX}) — provável erro de parsing, não "
+            "vou gravar"
+        )
     return mes_bruto, valor
 
 
 def main():
-    html = buscar_html(URL)
-    resultado = extrair(html)
+    try:
+        html = buscar_html(URL)
+    except (urllib.error.URLError, TimeoutError) as erro:
+        print(
+            f"ERRO: não consegui acessar {URL} depois de {TENTATIVAS} "
+            f"tentativas ({erro}). Provável instabilidade de rede, não "
+            "mudança de layout. Não vou sobrescrever o arquivo existente.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    try:
+        resultado = extrair(html)
+    except ValueError as erro:
+        print(f"ERRO: {erro}. Não vou sobrescrever o arquivo existente.", file=sys.stderr)
+        sys.exit(1)
+
     if resultado is None:
         print(
             "ERRO: não encontrei o padrão esperado ('Dólar Rotário - <mês> - "
