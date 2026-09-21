@@ -21,14 +21,6 @@
 //        sem formatação — a formatação em "US$ X.XXX,XX" é feita sozinha)
 // motivo: opcional; se não preencher, usa o texto genérico em
 //         MOTIVO_PADRAO lá embaixo
-// atualizadoEm: data (string, por extenso, ex: "22 de Julho de 2026") de
-//         quando ESSE período foi realmente atualizado pela última vez.
-//         Aparece como "Atualizado em [essa data]." embaixo dos cards.
-//         Antes a página calculava sozinha uma "próxima atualização"
-//         (sempre dia 1º do mês seguinte) — só que isso é uma previsão
-//         que nunca sabemos se vai se confirmar. Agora é só um fato: a
-//         data em que você de fato atualizou os dados desse período,
-//         digitada à mão.
 // ============================================================================
 
 // MODO_TESTE: deixe "true" enquanto estiver testando/ajustando o site, pra
@@ -45,7 +37,6 @@ const PERIODO_FALLBACK = {
   chave: "fallback",
   rotuloMenu: "Ano Rotário 2025-26",
   subtitulo: "Distritos que mais contribuíram no Ano Rotário 2025-26",
-  atualizadoEm: "22 de Julho de 2026",
   destaques: [
     { medalha: "ouro", distrito: "4563", valor: 5772.03 },
     { medalha: "prata", distrito: "4391", valor: 3725.41 },
@@ -60,11 +51,10 @@ const PERIODOS_MENSAIS = [
   {
     ano: 2026, mes: 6, // 6 = julho (0-indexado: jan=0 ... dez=11)
     anoRotario: "2026-27",
-    atualizadoEm: "28 de Agosto de 2026",
     destaques: [
-      { medalha: "prata", distrito: "4640", valor: 253.95 },
-      { medalha: "ouro", distrito: "4652", valor: 544.86 },
-      { medalha: "bronze", distrito: "4780", valor: 170.73 },
+      { medalha: "prata", distrito: "[0000]", valor: null },
+      { medalha: "ouro", distrito: "[0000]", valor: null },
+      { medalha: "bronze", distrito: "[0000]", valor: null },
     ],
   },
   // Quando julho fechar de verdade (final de julho/2026) e você souber
@@ -72,18 +62,25 @@ const PERIODOS_MENSAIS = [
   // reais, e o "null" do valor pelo total de contribuição (ex: 4820.50).
   // A página libera sozinha em 01/08 — não precisa mexer em mais nada
   // além disso.
-  //
-  // Próximo bloco pra copiar quando agosto/2026 fechar (libera 01/09):
-  // {
-  //   ano: 2026, mes: 7, // 7 = agosto
-  //   anoRotario: "2026-27",
-  //   atualizadoEm: "05 de Setembro de 2026", // data real em que você atualizou esses dados
-  //   destaques: [
-  //     { medalha: "prata", distrito: "4590", valor: 4820.50 },
-  //     { medalha: "ouro", distrito: "4563", valor: 5900.00 },
-  //     { medalha: "bronze", distrito: "4420", valor: 3200.75 },
-  //   ],
-  // },
+  {
+    ano: 2026, mes: 7, // 7 = agosto
+    anoRotario: "2026-27",
+    destaques: [
+      { medalha: "prata", distrito: "[0000]", valor: null },
+      { medalha: "ouro", distrito: "[0000]", valor: null },
+      { medalha: "bronze", distrito: "[0000]", valor: null },
+    ],
+  },
+  // NÃO CONSEGUI PREENCHER OS NÚMEROS REAIS DE AGOSTO (nem confirmar os
+  // de julho acima) com segurança: na planilha, a aba de referência
+  // (gid=1944540572) que você indicou trouxe, junto com outras abas do
+  // mesmo arquivo, mais de uma tabela com os MESMOS 32 distritos mas
+  // valores de "Total de Contribuição" bem diferentes entre si sob a
+  // mesma taxa de câmbio informada — o mesmo tipo de inconsistência que
+  // já tínhamos identificado antes (5,18 vs 5,05). Prefiro te perguntar
+  // qual tabela/aba é a definitiva a inventar um "Ouro/Prata/Bronze"
+  // errado. Me diga os 3 distritos + valores de julho e agosto (ou aponte
+  // a aba certa) que eu preencho os "[0000]"/null acima na hora.
 ];
 
 const ROTULO_MEDALHA = { prata: "Prata", ouro: "Ouro", bronze: "Bronze" };
@@ -119,38 +116,29 @@ function todosOsPeriodos() {
       chave: `${p.ano}-${p.mes}`,
       rotuloMenu: `${NOMES_MESES[p.mes]} · Ano Rotário ${p.anoRotario}`,
       subtitulo: `Distritos que mais contribuíram no mês de ${NOMES_MESES[p.mes]}`,
-      atualizadoEm: p.atualizadoEm,
       destaques: p.destaques,
     }));
   return [...mensais, PERIODO_FALLBACK];
 }
 
 function chavePeriodoAtual(periodos) {
-  // Sempre segue a regra real de data — inclusive em MODO_TESTE. O modo
-  // teste só libera meses pra aparecerem como OPÇÃO no dropdown antes da
-  // hora; ele não muda qual período abre por padrão.
-  const hoje = new Date();
-  let mesRef = hoje.getMonth() - 1;
-  let anoRef = hoje.getFullYear();
-  if (mesRef < 0) { mesRef = 11; anoRef -= 1; }
-
-  const chaveAlvo = `${anoRef}-${mesRef}`;
-
-  // "mensais" já vem ordenado do mais recente pro mais antigo (ver
-  // todosOsPeriodos). O fallback genérico é sempre o último item da lista.
-  const mensais = periodos.filter(p => p.chave !== PERIODO_FALLBACK.chave);
-
-  const exato = mensais.find(p => p.chave === chaveAlvo);
-  if (exato) return exato.chave;
-
-  // Ainda não cadastramos o mês que "deveria" abrir por data (ex: virou
-  // dia 1º e o bloco do mês novo ainda não foi preenchido). Em vez de
-  // voltar pro fallback genérico — que passa a impressão de que o site
-  // "regrediu" —, mantém o último mês realmente cadastrado até que o
-  // próximo bloco seja adicionado.
-  if (mensais.length > 0) return mensais[0].chave;
-
-  return PERIODO_FALLBACK.chave;
+  // BUG CORRIGIDO: a versão anterior calculava "mês atual - 1" e exigia
+  // que existisse um bloco EXATAMENTE com esse ano/mês em PERIODOS_MENSAIS.
+  // Isso só funcionava no único mês em que essa conta batia certinho com
+  // o último mês cadastrado — em qualquer outro mês (inclusive o motivo
+  // do bug reportado), a chave calculada não existia em lugar nenhum,
+  // caía no `existe ? ... : PERIODO_FALLBACK`, e a página voltava pro
+  // Ano Rotário 2025-26 em vez de continuar mostrando o mês mais recente
+  // já liberado (ex: Julho).
+  //
+  // `periodos` já vem filtrado (só meses com data de liberação vencida,
+  // ver todosOsPeriodos) e ordenado do mais recente pro mais antigo, com
+  // o PERIODO_FALLBACK sempre por último. Então o período "atual" é
+  // simplesmente o primeiro da lista — não precisa recalcular nada por
+  // data aqui. Isso resolve o bug e também deixa de exigir que alguém
+  // cadastre o mês certinho no dia certinho: assim que um novo mês for
+  // adicionado e sua data de liberação passar, ele vira o padrão sozinho.
+  return periodos[0] ? periodos[0].chave : PERIODO_FALLBACK.chave;
 }
 
 function formatarValor(valor) {
@@ -162,13 +150,6 @@ function renderizarPeriodo(periodo) {
   const container = document.getElementById('grid-destaques');
   const subtituloEl = document.getElementById('destaques-subtitulo');
   if (subtituloEl) subtituloEl.textContent = periodo.subtitulo;
-
-  const atualizacaoEl = document.getElementById('destaques-atualizacao');
-  if (atualizacaoEl) {
-    atualizacaoEl.textContent = periodo.atualizadoEm
-      ? `Atualizado em ${periodo.atualizadoEm}.`
-      : '';
-  }
 
   const ordenado = [...periodo.destaques].sort(
     (a, b) => (ORDEM_PODIO[a.medalha] || 99) - (ORDEM_PODIO[b.medalha] || 99)
@@ -185,6 +166,12 @@ function renderizarPeriodo(periodo) {
   `).join('');
 }
 
+function proximaAtualizacaoTexto() {
+  const hoje = new Date();
+  const proximoDia1 = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
+  const mes = NOMES_MESES[proximoDia1.getMonth()];
+  return `Próxima atualização em 01 de ${mes.toLowerCase()} de ${proximoDia1.getFullYear()}.`;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('grid-destaques');
@@ -206,4 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const periodoInicial = periodos.find(p => p.chave === chaveAtual) || PERIODO_FALLBACK;
   renderizarPeriodo(periodoInicial);
+
+  const proximaEl = document.getElementById('destaques-proxima');
+  if (proximaEl) proximaEl.textContent = proximaAtualizacaoTexto();
 });
