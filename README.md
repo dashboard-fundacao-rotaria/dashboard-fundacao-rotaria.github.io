@@ -21,7 +21,6 @@ O site funciona como um hub de navegação e comunicação, reunindo:
 - As regras oficiais do Programa de Reconhecimento da Fundação Rotária;
 - Apresentação da equipe nacional de assessoria;
 - Conteúdo institucional sobre a Fundação Rotária e formas de doar;
-- Relatórios individuais por distrito, listados publicamente em `distritos.html`;
 - Portão de entrada (dirigente de distrito × dirigente/associado de clube)
   com vídeo tutorial de como doar, e cotação do dólar em tempo real na navbar.
 
@@ -35,7 +34,6 @@ O site funciona como um hub de navegação e comunicação, reunindo:
 | Programa de Reconhecimento | `reconhecimento.html` |
 | Sobre a Fundação Rotária | `sobre.html` |
 | Projetos por Área de Enfoque | `projetos.html` |
-| Distritos | `distritos.html` |
 | Total de contribuição — Brasil / Área 29 / Área 31 | `estat-geral.html`, `estat-area29.html`, `estat-area31.html` |
 | Doações por Fundo | `estat-fundo.html` |
 | QTD Rotary Direct | `rotary-direct.html` |
@@ -52,8 +50,6 @@ automaticamente, sem precisar editar cada arquivo HTML individualmente.
 ```
 rfr-v2/
 ├── index.html, equipe.html, destaques.html, ...   → páginas do site
-├── distritos.html                                   → diretório público de todos os distritos
-├── distritos/                                      → páginas individuais de relatório por distrito
 ├── css/
 │   └── styles.css                                  → estilo global
 ├── js/
@@ -94,15 +90,6 @@ membro diretamente na lista `EQUIPE`.
 **Projetos** (`js/projetos.js`): siga o mesmo padrão para adicionar
 novos projetos por área de enfoque.
 
-## Distritos (público, sem login)
-
-O antigo sistema de chave de acesso foi removido do projeto inteiro:
-`js/chaves-acesso.js`, a trava de sessão no `<head>` de cada página de
-distrito e o painel do administrador não existem mais. Todas as páginas
-de relatório por distrito, dentro de `distritos/`, são públicas — o
-diretório fica em `distritos.html` (listado no menu principal), sem
-qualquer chave necessária para acessá-las.
-
 ## Portão de entrada + vídeo tutorial
 
 `js/portao-entrada.js` mostra, na primeira página que a pessoa abrir em
@@ -126,18 +113,14 @@ então o widget lê `assets/dolar-rotario.json`, um arquivo local do
 próprio site (busca same-origin, sem CORS).
 
 Esse JSON é mantido em dia sozinho por um GitHub Action
-(`.github/workflows/atualizar-dolar-rotario.yml`, roda todo dia às 09h
-de Brasília, e também pode ser disparado manualmente em Actions → Run
-workflow). Ele raspa a página da rotary.org.br
+(`.github/workflows/atualizar-dolar-rotario.yml`, roda todo dia à
+meia-noite de Brasília, e também pode ser disparado manualmente em
+Actions → Run workflow). Ele raspa a página da rotary.org.br
 (`.github/scripts/atualizar_dolar_rotario.py`) e só commita se achar o
 padrão esperado — se a Rotary mudar o layout daquela página, a
-automação para de atualizar (sem sobrescrever com valor errado) e o job
-aparece como falho em Actions; nesse caso o regex do script precisa ser
-ajustado à mão.
-
-**Pré-requisito:** o repositório precisa ter permissão de escrita para
-Actions habilitada (Settings → Actions → General → Workflow permissions
-→ "Read and write permissions"), senão o commit automático falha.
+automação para de atualizar (sem sobrescrever com valor errado) e abre
+uma issue automaticamente pra avisar; nesse caso o regex do script
+precisa ser ajustado à mão.
 
 ## Licença e créditos
 

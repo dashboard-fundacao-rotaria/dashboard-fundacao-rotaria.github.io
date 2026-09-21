@@ -8,12 +8,6 @@ Esse valor é publicado pela própria Rotary Brazil Office numa tabelinha
 simples no topo do site, ex:
     <table class="dolar">
       <tr><td style="text-align: left;">Dólar Rotário - Setembro de 2026 - R$ 5,19</td>...
-
-IMPORTANTE: isso é raspagem de HTML de um site que não é nosso — se a
-Rotary mudar o layout dessa página, este script para de encontrar o
-padrão e (de propósito) NÃO sobrescreve o arquivo com lixo: falha alto e
-mantém o último valor válido no ar. Se isso acontecer, o job do GitHub
-Actions aparece como falho e alguém precisa olhar/ajustar o regex abaixo.
 """
 import json
 import re
