@@ -5,7 +5,7 @@
 // A página abre sempre no último MÊS FECHADO (mês anterior ao atual),
 // porque só dá pra saber quem foi destaque depois que o mês termina.
 // Ex: em agosto/2026, abre nos destaques de julho/2026. Em setembro,
-// abre nos de agosto. Isso troca sozinho todo dia 1º.
+// abre nos de agosto. Isso troca sozinho todo dia 10.
 //
 // O dropdown "Período" deixa a pessoa escolher outros meses já
 // cadastrados manualmente — mas sempre ABRE no mês automático.
@@ -24,7 +24,7 @@
 // ============================================================================
 
 // MODO_TESTE: deixe "true" enquanto estiver testando/ajustando o site, pra
-// ver os meses já cadastrados mesmo antes da data de liberação (dia 1º do
+// ver os meses já cadastrados mesmo antes da data de liberação (dia 10 do
 // mês seguinte). ANTES DE PUBLICAR DE VERDADE, volte pra "false" — senão
 // os dados aparecem pra qualquer visitante antes da hora.
 const MODO_TESTE = true;
@@ -60,27 +60,17 @@ const PERIODOS_MENSAIS = [
   // Quando julho fechar de verdade (final de julho/2026) e você souber
   // quem foram os 3 distritos, troque os "[0000]" acima pelos números
   // reais, e o "null" do valor pelo total de contribuição (ex: 4820.50).
-  // A página libera sozinha em 01/08 — não precisa mexer em mais nada
+  // A página libera sozinha em 10/08 — não precisa mexer em mais nada
   // além disso.
   {
     ano: 2026, mes: 7, // 7 = agosto
     anoRotario: "2026-27",
     destaques: [
-      { medalha: "prata", distrito: "[0000]", valor: null },
-      { medalha: "ouro", distrito: "[0000]", valor: null },
-      { medalha: "bronze", distrito: "[0000]", valor: null },
+      { medalha: "prata", distrito: "4770", valor: 119.61 },
+      { medalha: "ouro", distrito: "4563", valor: 195.71 },
+      { medalha: "bronze", distrito: "4420", valor: 90.00 },
     ],
   },
-  // NÃO CONSEGUI PREENCHER OS NÚMEROS REAIS DE AGOSTO (nem confirmar os
-  // de julho acima) com segurança: na planilha, a aba de referência
-  // (gid=1944540572) que você indicou trouxe, junto com outras abas do
-  // mesmo arquivo, mais de uma tabela com os MESMOS 32 distritos mas
-  // valores de "Total de Contribuição" bem diferentes entre si sob a
-  // mesma taxa de câmbio informada — o mesmo tipo de inconsistência que
-  // já tínhamos identificado antes (5,18 vs 5,05). Prefiro te perguntar
-  // qual tabela/aba é a definitiva a inventar um "Ouro/Prata/Bronze"
-  // errado. Me diga os 3 distritos + valores de julho e agosto (ou aponte
-  // a aba certa) que eu preencho os "[0000]"/null acima na hora.
 ];
 
 const ROTULO_MEDALHA = { prata: "Prata", ouro: "Ouro", bronze: "Bronze" };
@@ -106,10 +96,10 @@ function todosOsPeriodos() {
   const hoje = new Date();
   const mensais = PERIODOS_MENSAIS
     // Só entra na lista (inclusive no dropdown) se a data de liberação já
-    // passou — dia 1º do mês seguinte ao mês de referência. Antes disso,
+    // passou — dia 10 do mês seguinte ao mês de referência. Antes disso,
     // o mês nem aparece como opção, mesmo já cadastrado no código: dá pra
     // preparar os dados com antecedência sem vazar antes da hora.
-    .filter(p => MODO_TESTE || hoje >= new Date(p.ano, p.mes + 1, 1))
+    .filter(p => MODO_TESTE || hoje >= new Date(p.ano, p.mes + 1, 10))
     .slice()
     .sort((a, b) => (b.ano - a.ano) || (b.mes - a.mes))
     .map(p => ({
@@ -168,9 +158,9 @@ function renderizarPeriodo(periodo) {
 
 function proximaAtualizacaoTexto() {
   const hoje = new Date();
-  const proximoDia1 = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
-  const mes = NOMES_MESES[proximoDia1.getMonth()];
-  return `Próxima atualização em 01 de ${mes.toLowerCase()} de ${proximoDia1.getFullYear()}.`;
+  const proximoDia10 = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 10);
+  const mes = NOMES_MESES[proximoDia10.getMonth()];
+  return `Próxima atualização em 10 de ${mes.toLowerCase()} de ${proximoDia10.getFullYear()}.`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

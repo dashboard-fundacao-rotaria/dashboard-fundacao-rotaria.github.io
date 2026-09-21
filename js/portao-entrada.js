@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     link.className = 'link-tutorial';
     link.setAttribute('data-reabrir-tutorial', '');
     link.textContent = 'Como doar? Assista de novo';
-    rodape.appendChild(link);
+    rodape.insertBefore(link, rodape.firstChild);
   }
 
   if (escolhaJaFeita) return; // já escolheu nesta sessão do navegador — não mostra o portão de novo
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.className = 'link-tutorial';
         link.setAttribute('data-reabrir-tutorial', '');
         link.textContent = 'Como doar? Assista de novo';
-        rodape.appendChild(link);
+        rodape.insertBefore(link, rodape.firstChild);
       }
     });
   });
