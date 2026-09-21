@@ -193,7 +193,7 @@ body{
   margin:0 0 8px;
   font-size:20px;
   font-weight:800;
-  color:var(--ink);
+  color:var(--rosa);
 }
 .portao-modal p{
   margin:0;
@@ -744,10 +744,19 @@ select#filtro{
    ========================================================================== */
 @media (max-width: 700px){
   .navbar-logo img{height:28px;}
+  /* Quebra a linha antes do widget de câmbio (elemento invisível com
+     flex-basis:100%) pra ele sempre cair numa linha própria abaixo do
+     logo, em vez de disputar espaço na mesma linha do hambúrguer. */
+  .barra-superior::after{
+    content:"";
+    order:1;
+    flex-basis:100%;
+    height:0;
+  }
   .widget-cambio{
     order:2;
     flex:none;
-    margin:8px 16px 8px auto;
+    margin:8px auto 8px;
     padding:6px 12px;
     font-size:12px;
   }

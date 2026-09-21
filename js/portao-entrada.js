@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   overlayPortao.innerHTML = `
     <div class="portao-modal" role="dialog" aria-modal="true" aria-label="Identifique seu perfil">
       <h2>Antes de continuar</h2>
-      <p>Pra te mostrar a orientação certa sobre como doar, conte rapidinho qual é o seu papel:</p>
+      <p>Antes de continuar, nos diga qual é o seu papel:</p>
       <div class="portao-opcoes">
         <button type="button" class="portao-opcao" data-papel="distrito">Sou dirigente do meu distrito</button>
         <button type="button" class="portao-opcao" data-papel="clube">Sou dirigente ou membro do meu clube</button>
