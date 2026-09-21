@@ -1,0 +1,54 @@
+name: Atualizar Dólar Rotário
+
+# Busca o valor oficial do Dólar Rotário em rotary.org.br e grava em
+# assets/dolar-rotario.json — o site lê esse arquivo (mesmo domínio, sem
+# CORS) pra mostrar o câmbio na navbar. Roda sozinho, sem precisar de
+# ninguém editar código todo mês.
+on:
+  schedule:
+    - cron: "0 3 * * *" # todo dia, 03:00 UTC (00:00 no horário de Brasília)
+  workflow_dispatch: {} # permite rodar manualmente em Actions > Run workflow
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Buscar e gravar o valor do Dólar Rotário
+        run: python3 .github/scripts/atualizar_dolar_rotario.py
+
+      - name: Commitar se o valor mudou
+        if: success()
+        run: |
+          if git diff --quiet -- assets/dolar-rotario.json; then
+            echo "Sem mudança no Dólar Rotário — nada pra commitar."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/dolar-rotario.json
+          git commit -m "Atualiza Dólar Rotário automaticamente"
+          git push
+
+      # Se o scraping falhar (layout mudou, site fora do ar, etc.) ninguém
+      # olha a aba Actions por conta própria — então avisamos abrindo uma
+      # issue, sem duplicar caso já exista uma aberta da última falha.
+      - name: Abrir issue se a busca falhou
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITULO="Falha ao atualizar o Dólar Rotário"
+          JA_ABERTA=$(gh issue list --repo "${{ github.repository }}" --state open --search "in:title $TITULO" --json number --jq 'length')
+          if [ "$JA_ABERTA" != "0" ]; then
+            echo "Já existe issue aberta pra essa falha — não vou duplicar."
+            exit 0
+          fi
+          gh issue create --repo "${{ github.repository }}" \
+            --title "$TITULO" \
+            --body "O workflow [Atualizar Dólar Rotário](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) falhou em $(date -u +%Y-%m-%dT%H:%M:%SZ). Prováveis causas: o layout de rotary.org.br mudou, ou instabilidade de rede que sobreviveu às tentativas automáticas. Veja o log do job pra confirmar e, se for mudança de layout, ajustar o regex em \`.github/scripts/atualizar_dolar_rotario.py\`. Esta issue fecha sozinha? Não — feche manualmente depois de corrigir, senão a próxima falha não abre uma nova."

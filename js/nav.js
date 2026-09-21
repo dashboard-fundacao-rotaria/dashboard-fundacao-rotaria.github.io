@@ -1,7 +1,7 @@
 // ============================================================================
 // MENU DE NAVEGAÇÃO — fonte única de verdade.
 // Para adicionar, remover, renomear ou reordenar uma aba, edite SÓ a lista
-// abaixo. Todas as 15 páginas puxam o menu daqui automaticamente — não
+// abaixo. Todas as 14 páginas puxam o menu daqui automaticamente — não
 // precisa editar o HTML de cada arquivo.
 // ============================================================================
 const TABS = [
@@ -24,105 +24,50 @@ const TABS = [
 ];
 
 // ============================================================================
-// BOTÃO DE ACESSO RESTRITO — mesma lógica do menu: um lugar só (aqui) cuida
-// de gerar o botão + modal em todas as páginas. As chaves ficam em
-// js/chaves-acesso.js (que precisa estar carregado ANTES deste script no
-// HTML). Se esse arquivo não existir na página, o botão não aparece.
+// WIDGET DE DÓLAR ROTÁRIO — ocupa, na navbar, o lugar onde antes ficava o
+// botão "Acesso" (o sistema de chave/login foi removido do projeto
+// inteiro; ver também js/portao-entrada.js pro que entrou no lugar do
+// fluxo de acesso em si).
 //
-// O botão tem dois modos:
-// - "Acesso" (páginas normais do site): abre o modal pra digitar a chave.
-// - "Sair" (dentro de uma página de distrito): encerra a sessão de acesso
-//   e volta pra Home. Ver TRAVA DE SESSÃO mais abaixo pra entender como a
-//   sessão é controlada.
+// Mostra o valor OFICIAL do Dólar Rotário (o mesmo publicado no topo de
+// rotary.org.br), lido de assets/dolar-rotario.json — um arquivo estático
+// do próprio site, então a busca é sempre same-origin (sem CORS).
+//
+// Esse JSON é mantido atualizado sozinho por um GitHub Action
+// (.github/workflows/atualizar-dolar-rotario.yml, roda 1x por dia) que
+// raspa rotary.org.br e commita o valor novo — ninguém precisa editar
+// código nem planilha por causa disso. Ver o comentário daquele workflow
+// e do script em .github/scripts/ pra detalhes/limitações (é raspagem de
+// HTML de um site de terceiros: se a Rotary mudar o layout da página, a
+// automação para de atualizar — mas sem sobrescrever com valor errado).
 // ============================================================================
-function montarBotaoAcesso(barra, estaEmDistrito, prefixo, ehPaginaAdmin) {
-  if (typeof CHAVES_ACESSO === 'undefined') return; // chaves-acesso.js não carregado nesta página
+function montarWidgetCambio(barra, prefixo) {
+  const widget = document.createElement('span');
+  widget.className = 'widget-cambio';
+  widget.title = 'Dólar Rotário do mês — valor oficial publicado em rotary.org.br, atualizado automaticamente.';
+  widget.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5S10.3 12 12 12s3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5" stroke-width="1.6"></path><line x1="12" y1="5.5" x2="12" y2="7"></line><line x1="12" y1="17" x2="12" y2="18.5"></line></svg><span class="widget-cambio-texto">Dólar Rotário…</span>';
+  barra.appendChild(widget);
 
-  if (estaEmDistrito) {
-    // "Sair" fica sempre junto do selo, na primeira linha (igual já
-    // acontece no painel do admin). "Ver outro distrito", quando existe,
-    // vai numa linha própria — controlado via order/flex no CSS, não por
-    // agrupamento no DOM.
-    const paginaAdmin = sessionStorage.getItem('paginaAdmin');
-    if (!ehPaginaAdmin && sessionStorage.getItem('modoAdmin') === '1' && paginaAdmin) {
-      const voltar = document.createElement('a');
-      voltar.className = 'link-voltar-admin';
-      voltar.href = paginaAdmin; // já está dentro de distritos/, mesmo nível
-      voltar.innerHTML = '<span class="pill">← Ver outro distrito</span>';
-      barra.appendChild(voltar);
-    }
+  const texto = widget.querySelector('.widget-cambio-texto');
 
-    const botao = document.createElement('button');
-    botao.type = 'button';
-    botao.className = 'botao-acesso';
-    // Modo "Sair": não abre modal, só encerra a sessão e volta pra Home.
-    botao.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span>Sair</span>';
-    botao.addEventListener('click', () => {
-      sessionStorage.removeItem('acessoAtivo');
-      sessionStorage.removeItem('modoAdmin');
-      sessionStorage.removeItem('paginaAdmin');
-      window.location.href = prefixo + 'index.html';
+  fetch(`${prefixo}assets/dolar-rotario.json`)
+    .then(r => {
+      if (!r.ok) throw new Error('assets/dolar-rotario.json não encontrado');
+      return r.json();
+    })
+    .then(dados => {
+      const valor = Number(dados && dados.valor);
+      if (!valor || isNaN(valor)) throw new Error('conteúdo inesperado em dolar-rotario.json');
+      texto.textContent = `Dólar Rotário: R$ ${valor.toFixed(2).replace('.', ',')}`;
+      if (dados.mes) {
+        widget.title = `Dólar Rotário — ${dados.mes} (fonte: rotary.org.br, atualizado automaticamente)`;
+      }
+    })
+    .catch(() => {
+      // Arquivo ausente, corrompido, ou automação nunca rodou ainda:
+      // melhor sumir com o widget do que travar em "Dólar Rotário…".
+      widget.remove();
     });
-    barra.appendChild(botao);
-    return;
-  }
-
-  const botao = document.createElement('button');
-  botao.type = 'button';
-  botao.className = 'botao-acesso';
-  botao.setAttribute('aria-haspopup', 'dialog');
-  botao.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg><span>Acesso</span>';
-  barra.appendChild(botao);
-
-  const overlay = document.createElement('div');
-  overlay.className = 'acesso-overlay';
-  overlay.innerHTML = `
-    <div class="acesso-modal" role="dialog" aria-modal="true" aria-label="Acesso restrito">
-      <button type="button" class="acesso-fechar" aria-label="Fechar">&times;</button>
-      <h2>Acesso restrito</h2>
-      <p>Digite a chave que você recebeu para acessar a página do seu distrito.</p>
-      <input type="text" class="acesso-input" placeholder="Chave de acesso" autocomplete="off" spellcheck="false">
-      <button type="button" class="acesso-entrar">Acessar</button>
-      <p class="acesso-erro" hidden>Chave inválida. Confira e tente novamente.</p>
-    </div>`;
-  document.body.appendChild(overlay);
-
-  const input = overlay.querySelector('.acesso-input');
-  const erro = overlay.querySelector('.acesso-erro');
-
-  function abrir() {
-    overlay.classList.add('aberto');
-    erro.hidden = true;
-    input.value = '';
-    setTimeout(() => input.focus(), 50);
-  }
-  function fechar() { overlay.classList.remove('aberto'); }
-  function tentarEntrar() {
-    const chave = input.value.trim().toUpperCase();
-    const destino = CHAVES_ACESSO[chave];
-    if (destino) {
-      // Marca a sessão como autorizada ANTES de redirecionar. É essa marca
-      // que a TRAVA DE SESSÃO (no <head> de cada página de distrito) checa
-      // pra decidir se deixa ver o conteúdo ou manda de volta pra Home.
-      // Zera qualquer resquício de sessão admin anterior nesta aba antes de
-      // logar de novo — evita que o link "voltar ao painel" apareça pra
-      // quem logou agora com uma chave normal, se a aba já tinha sido usada
-      // pra admin antes sem clicar em "Sair".
-      sessionStorage.removeItem('modoAdmin');
-      sessionStorage.removeItem('paginaAdmin');
-      sessionStorage.setItem('acessoAtivo', '1');
-      window.location.href = prefixo + destino;
-    } else {
-      erro.hidden = false;
-    }
-  }
-
-  botao.addEventListener('click', abrir);
-  overlay.querySelector('.acesso-fechar').addEventListener('click', fechar);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) fechar(); });
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') tentarEntrar(); });
-  overlay.querySelector('.acesso-entrar').addEventListener('click', tentarEntrar);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fechar(); });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -134,14 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const scriptAtual = document.querySelector('script[data-pagina-atual]');
   const paginaAtual = scriptAtual ? scriptAtual.dataset.paginaAtual : '';
 
-  // Detecta se esta página está dentro de uma subpasta (ex: distritos/) pra
-  // saber se os links do menu precisam de "../" na frente. Faz isso lendo o
-  // próprio src do <script src="js/nav.js"> ou "../js/nav.js" — não depende
-  // de nada além do que já está no HTML.
+  // Detecta se esta página está dentro de uma subpasta pra saber se os
+  // links do menu precisam de "../" na frente. Faz isso lendo o próprio
+  // src do <script src="js/nav.js"> ou "../js/nav.js" — não depende de
+  // nada além do que já está no HTML. Hoje nenhuma página fica em
+  // subpasta, mas mantém isso genérico pra não quebrar se uma nova
+  // seção precisar (a lógica não é específica de nenhuma pasta).
   const prefixo = scriptAtual && scriptAtual.getAttribute('src').startsWith('../') ? '../' : '';
-  const estaEmDistrito = prefixo === '../';
-  const numeroDistrito = scriptAtual ? scriptAtual.dataset.distrito : undefined;
-  const ehPaginaAdmin = !!(scriptAtual && scriptAtual.dataset.admin === '1');
 
   nav.innerHTML = TABS.map(t => {
     if (t.grupo) {
@@ -223,20 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
   hamburguer.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
   barra.insertBefore(hamburguer, barra.firstChild);
 
-  // Logo — a barra ficou vazia depois que o menu de abas virou hambúrguer
-  // sempre ativo. Fica clicável e leva pra Início, como é convenção em
-  // quase todo site. EXCETO na própria capa (index.html): lá o logo já
-  // aparece grande no conteúdo da página, ficaria redundante repetir
-  // ele também na navbar.
-  if (paginaAtual !== 'index.html') {
-    const logoLink = document.createElement('a');
-    logoLink.className = 'navbar-logo';
-    logoLink.href = prefixo + 'index.html';
-    logoLink.setAttribute('aria-label', 'Ir para o início');
-    logoLink.innerHTML = `<img src="${prefixo}assets/logo/rotaract-rotary-logo-navbar.png" alt="Rotaract Brasil · Fundação Rotária">`;
-    barra.insertBefore(logoLink, hamburguer.nextSibling);
-  }
-
   const itensMenuMobile = TABS.map(t => {
     if (t.grupo) {
       const subitens = t.grupo.map(sub => {
@@ -275,29 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
   menuMobile.addEventListener('click', (e) => { if (e.target === menuMobile) fecharMenuMobile(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharMenuMobile(); });
 
-  // Se estamos carregando o próprio painel do admin agora, marca a sessão
-  // como "modo admin" AQUI — e não na hora do login. Assim nenhuma parte
-  // do código de login precisa saber "qual chave é a admin"; quem entrega
-  // essa informação é a própria página, através do data-admin que só ela
-  // tem.
-  if (ehPaginaAdmin) {
-    sessionStorage.setItem('modoAdmin', '1');
-    sessionStorage.setItem('paginaAdmin', paginaAtual);
-  }
-
-  // Selo — indica área restrita, com o número do distrito quando a
-  // própria página o declara (data-distrito). No painel do admin NÃO
-  // mostra selo — a página já tem seu próprio título "Painel do
-  // Administrador" no corpo, um selo repetindo isso na navbar era
-  // redundante.
-  if (estaEmDistrito && !ehPaginaAdmin) {
-    const selo = document.createElement('span');
-    selo.className = 'selo-distrito';
-    selo.textContent = numeroDistrito ? `Visão - Distrito ${numeroDistrito}` : 'Visão de Distrito';
-    barra.insertBefore(selo, nav);
-  }
-
-  montarBotaoAcesso(barra, estaEmDistrito, prefixo, ehPaginaAdmin);
+  montarWidgetCambio(barra, prefixo);
 
   // Centraliza a aba ativa na barra ao carregar a página. Sem isso, o
   // navegador decide sozinho onde deixar a rolagem horizontal ao

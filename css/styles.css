@@ -122,7 +122,7 @@ body{
 .tab-dropdown-item.ativo{color:var(--rosa);background:#fdf0f5;}
 
 /* ==========================================================================
-   2.1) FAIXA SUPERIOR — envolve a barra de abas + botão de acesso restrito.
+   2.1) FAIXA SUPERIOR — envolve a barra de abas + widget de câmbio.
    Criada via JS (nav.js) para não precisar editar as 15 páginas.
    ========================================================================== */
 .barra-superior{
@@ -133,10 +133,6 @@ body{
   position:relative;
   z-index:2;
   flex-wrap:wrap;
-  /* Antes a altura vinha "de graça" da barra de abas (58px). Com ela
-     escondida (hambúrguer sempre ativo agora), a barra ficaria fina
-     demais sem isso. */
-  min-height:58px;
 }
 .barra-superior .tabs-relatorio{
   flex:1;
@@ -150,7 +146,7 @@ body{
   display:none;
 }
 
-.botao-acesso{
+.widget-cambio{
   flex:none;
   display:flex;
   align-items:center;
@@ -160,181 +156,130 @@ body{
   font-family:inherit;
   font-size:12.5px;
   font-weight:700;
-  color:var(--rosa);
-  background:#fdf0f5;
-  border:1px solid #f6d3e2;
-  border-radius:100px;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:background .15s ease;
-}
-/* Quando "Ver outro distrito" vem logo antes do "Sair", é ELE quem
-   empurra os dois pra direita (ver .link-voltar-admin) — o Sair aqui
-   não deve ter a própria margem automática, senão o espaço livre fica
-   dividido entre os dois em vez de ficarem colados.
-   Só no desktop: no mobile (ver media query mais abaixo) os dois ficam
-   em linhas diferentes de propósito, então essa regra não deve valer lá. */
-@media (min-width:701px){
-  .link-voltar-admin + .botao-acesso{
-    margin-left:0;
-  }
-}
-.botao-acesso:hover{background:#fce3ee;}
-
-.selo-distrito{
-  flex:none;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin:0 0 0 20px;
-  padding:0 0 0 20px;
-  border-left:1px solid var(--borda);
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.3px;
-  text-transform:uppercase;
-  color:var(--rosa);
-  white-space:nowrap;
-}
-
-.link-voltar-admin{
-  flex:none;
-  display:flex;
-  align-items:center;
-  margin:0 10px 0 auto;
-  text-decoration:none;
-}
-/* Nota: essa é a margem que empurra o par [Ver outro distrito, Sair]
-   pra direita, já que .botao-acesso vem logo depois no DOM e não
-   precisa (nem deve) ter a própria margem automática aqui — se os dois
-   tiverem margin-left:auto, o espaço livre fica dividido entre eles em
-   vez de colar os dois juntos na ponta. */
-.link-voltar-admin .pill{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:7px 14px;
-  font-family:inherit;
-  font-size:12.5px;
-  font-weight:700;
   color:var(--azul);
   background:#eaf5fc;
   border:1px solid #cfe9f7;
   border-radius:100px;
   white-space:nowrap;
-  transition:background .15s ease;
+  cursor:help;
 }
-.link-voltar-admin:hover .pill{background:#d8edfa;}
 
-.painel-admin{
-  max-width:640px;
-  margin:40px auto;
-  padding:0 20px;
-}
-.painel-admin h1{
-  font-size:28px;
-  font-weight:800;
-  color:var(--rosa);
-  margin:0 0 8px;
-}
-.painel-admin > p{
-  font-size:14px;
-  color:var(--ink-soft);
-  margin:0 0 24px;
-}
-.lista-admin-distritos{
-  list-style:none;
-  margin:0;
-  padding:0;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:10px;
-}
-.lista-admin-distritos a{
-  display:block;
-  padding:12px 14px;
-  background:#fff;
-  border:1px solid var(--borda);
-  border-radius:10px;
-  color:var(--ink);
-  font-weight:700;
-  font-size:14px;
-  text-decoration:none;
-  text-align:center;
-  transition:border-color .15s ease, color .15s ease;
-}
-.lista-admin-distritos a:hover{border-color:var(--rosa);color:var(--rosa);}
-
-.acesso-overlay{
+/* ==========================================================================
+   PORTÃO DE ENTRADA (obrigatório, sem X/clique-fora/Esc) e MODAL DE VÍDEO
+   (esse sim fechável) — ver js/portao-entrada.js.
+   ========================================================================== */
+.portao-overlay{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(31,31,30,0.55);
-  z-index:100;
+  background:rgba(31,31,30,0.6);
+  z-index:300;
   align-items:center;
   justify-content:center;
   padding:20px;
 }
-.acesso-overlay.aberto{display:flex;}
-
-.acesso-modal{
-  position:relative;
+.portao-overlay.aberto{display:flex;}
+.portao-modal{
   width:100%;
-  max-width:360px;
+  max-width:420px;
   background:#fff;
   border-radius:16px;
-  padding:28px 24px 24px;
+  padding:32px 28px;
   box-shadow:0 20px 50px rgba(0,0,0,.25);
+  text-align:center;
 }
-.acesso-modal h2{
-  margin:0 0 6px;
-  font-size:19px;
+.portao-modal h2{
+  margin:0 0 8px;
+  font-size:20px;
   font-weight:800;
   color:var(--ink);
 }
-.acesso-modal p{
-  margin:0 0 16px;
-  font-size:13.5px;
-  color:var(--ink-soft);
-  line-height:1.4;
-}
-.acesso-fechar{
-  position:absolute;
-  top:12px;right:14px;
-  border:none;background:none;
-  font-size:22px;line-height:1;
-  color:var(--ink-soft);
-  cursor:pointer;
-}
-.acesso-input{
-  width:100%;
-  padding:11px 14px;
-  font-family:inherit;
+.portao-modal p{
+  margin:0;
   font-size:14px;
-  border:1.5px solid var(--borda);
-  border-radius:10px;
-  margin-bottom:12px;
-  text-transform:uppercase;
+  color:var(--ink-soft);
+  line-height:1.45;
 }
-.acesso-input:focus{outline:none;border-color:var(--rosa);}
-.acesso-entrar{
-  width:100%;
-  padding:11px;
+.portao-opcoes{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:22px;
+}
+.portao-opcao{
+  padding:14px 16px;
   font-family:inherit;
   font-size:14px;
   font-weight:700;
-  color:#fff;
-  background:var(--rosa);
-  border:none;
+  color:var(--ink);
+  background:#fff;
+  border:1.5px solid var(--borda);
   border-radius:10px;
   cursor:pointer;
+  transition:border-color .15s ease, background .15s ease, color .15s ease;
 }
-.acesso-entrar:hover{opacity:.92;}
-.acesso-erro{
-  margin:10px 0 0;
+.portao-opcao:hover{border-color:var(--rosa);background:#fdf0f5;color:var(--rosa);}
+
+.video-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(31,31,30,0.6);
+  z-index:250;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.video-overlay.aberto{display:flex;}
+.video-modal{
+  position:relative;
+  width:100%;
+  max-width:720px;
+  background:#fff;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+.video-titulo{
+  margin:0 0 14px;
+  padding-right:30px;
+  font-size:18px;
+  font-weight:800;
+  color:var(--ink);
+}
+.video-fechar{
+  position:absolute;
+  top:12px;right:14px;
+  border:none;background:none;
+  font-size:24px;line-height:1;
+  color:var(--ink-soft);
+  cursor:pointer;
+}
+.video-wrap{
+  position:relative;
+  padding-top:56.25%; /* proporção 16:9 */
+  border-radius:10px;
+  overflow:hidden;
+  background:#000;
+}
+.video-iframe{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  border:0;
+}
+
+.link-tutorial{
+  display:inline-block;
+  margin-top:8px;
+  padding:0;
+  font-family:inherit;
   font-size:12.5px;
-  color:#c0392b;
-  text-align:center;
+  font-weight:700;
+  color:var(--rosa);
+  background:none;
+  border:none;
+  text-decoration:underline;
+  cursor:pointer;
 }
 
 /* ==========================================================================
@@ -526,7 +471,7 @@ body{
   font-size:12.5px;font-weight:600;padding:10px 14px;border-radius:10px;
   margin-bottom:18px;
 }
-.destaques-atualizacao{
+.destaques-proxima{
   text-align:center;font-size:12.5px;color:#c0392b;font-weight:600;
   margin:32px 0 0;padding-top:20px;border-top:1px solid var(--borda);
 }
@@ -787,37 +732,20 @@ select#filtro{
 
 /* ==========================================================================
    15) BARRA SUPERIOR — RESPONSIVO (telas estreitas)
-   Precisa vir DEPOIS das regras base de .selo-distrito / .botao-acesso /
-   .link-voltar-admin (seção 2.1) pra realmente sobrescrevê-las — regras de
-   mesma especificidade, quem vem depois no arquivo vence, media query ou não.
+   Precisa vir DEPOIS das regras base de .widget-cambio (seção 2.1) pra
+   realmente sobrescrevê-las — regras de mesma especificidade, quem vem
+   depois no arquivo vence, media query ou não.
 
    O hambúrguer (e a barra de abas escondida) já são assim em QUALQUER
    tamanho de tela — ver .menu-hamburguer / .barra-superior .tabs-relatorio
    na seção 2.1, não depende deste media query. Esta seção aqui cuida só
-   de comprimir selo + botões (Sair / Ver outro distrito) numa linha
-   compacta quando a tela é estreita (isso sim é específico de mobile).
+   de comprimir o widget numa linha compacta quando a tela é estreita.
    ========================================================================== */
 @media (max-width: 700px){
-  .navbar-logo img{height:28px;}
-  .selo-distrito{
-    order:1;
-    flex:none;
-    margin:8px 0 8px 16px;
-  }
-  .botao-acesso{
+  .widget-cambio{
     order:2;
     flex:none;
     margin:8px 16px 8px auto;
-    padding:6px 12px;
-    font-size:12px;
-  }
-  .link-voltar-admin{
-    order:3;
-    flex:1 0 calc(100% - 32px);
-    margin:0 16px 8px;
-    justify-content:flex-end;
-  }
-  .link-voltar-admin .pill{
     padding:6px 12px;
     font-size:12px;
   }
@@ -833,14 +761,6 @@ select#filtro{
   background:none;border:none;cursor:pointer;color:var(--ink);
   padding:8px;margin:0 4px 0 12px;flex:none;
 }
-
-/* Logo — preenche o espaço que sobrou na barra depois que o menu de
-   abas virou hambúrguer. Altura fixa (a original é bem larga: 974×373),
-   largura acompanha proporcionalmente. */
-.navbar-logo{
-  display:flex;align-items:center;flex:none;margin:0 4px;
-}
-.navbar-logo img{height:38px;width:auto;display:block;}
 
 /* Painel lateral do menu mobile — mesma linguagem visual do modal de
    acesso (fundo escurecido + painel branco), só que lateral e com lista

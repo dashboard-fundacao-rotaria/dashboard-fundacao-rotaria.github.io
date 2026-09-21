@@ -1,0 +1,14 @@
+<!--
+Recorte mínimo do HTML de rotary.org.br que o script depende. Serve só
+pra testar o regex em atualizar_dolar_rotario.py contra uma estrutura
+fixa, sem depender do site real estar no ar (ou ter mudado). Se este
+teste passar mas o cron falhar em produção, o problema é o layout do
+site ter mudado — não o regex.
+-->
+<html>
+  <body>
+    <table class="dolar">
+      <tr><td style="text-align: left;">Dólar Rotário - Setembro de 2026 - R$ 5,19</td></tr>
+    </table>
+  </body>
+</html>
