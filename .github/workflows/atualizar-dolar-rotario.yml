@@ -6,7 +6,7 @@ name: Atualizar Dólar Rotário
 # ninguém editar código todo mês.
 on:
   schedule:
-    - cron: "0 12 * * *" # todo dia, 12:00 UTC (09:00 no horário de Brasília)
+    - cron: "0 3 * * *" # todo dia, 03:00 UTC (00:00 no horário de Brasília)
   workflow_dispatch: {} # permite rodar manualmente em Actions > Run workflow
 
 permissions:
