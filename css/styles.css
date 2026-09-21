@@ -742,6 +742,7 @@ select#filtro{
    de comprimir o widget numa linha compacta quando a tela é estreita.
    ========================================================================== */
 @media (max-width: 700px){
+  .navbar-logo img{height:28px;}
   .widget-cambio{
     order:2;
     flex:none;
@@ -761,6 +762,14 @@ select#filtro{
   background:none;border:none;cursor:pointer;color:var(--ink);
   padding:8px;margin:0 4px 0 12px;flex:none;
 }
+
+/* Logo — preenche o espaço que sobrou na barra depois que o menu de
+   abas virou hambúrguer. Altura fixa (a original é bem larga: 974×373),
+   largura acompanha proporcionalmente. */
+.navbar-logo{
+  display:flex;align-items:center;flex:none;margin:0 4px;
+}
+.navbar-logo img{height:38px;width:auto;display:block;}
 
 /* Painel lateral do menu mobile — mesma linguagem visual do modal de
    acesso (fundo escurecido + painel branco), só que lateral e com lista
