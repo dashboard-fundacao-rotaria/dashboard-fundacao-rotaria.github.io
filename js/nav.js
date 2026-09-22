@@ -42,13 +42,25 @@ const TABS = [
 // automação para de atualizar — mas sem sobrescrever com valor errado).
 // ============================================================================
 function montarWidgetCambio(barra, prefixo) {
+  const iconeSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5S10.3 12 12 12s3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5" stroke-width="1.6"></path><line x1="12" y1="5.5" x2="12" y2="7"></line><line x1="12" y1="17" x2="12" y2="18.5"></line></svg>';
+
   const widget = document.createElement('span');
   widget.className = 'widget-cambio';
   widget.title = 'Dólar Rotário do mês — valor oficial publicado em rotary.org.br, atualizado automaticamente.';
-  widget.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1.1-3 2.5S10.3 12 12 12s3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5" stroke-width="1.6"></path><line x1="12" y1="5.5" x2="12" y2="7"></line><line x1="12" y1="17" x2="12" y2="18.5"></line></svg><span class="widget-cambio-texto">Dólar Rotário…</span>';
+  widget.innerHTML = `${iconeSvg}<span class="widget-cambio-texto">Dólar Rotário…</span>`;
   barra.appendChild(widget);
 
+  // Faixa própria pro mobile — fica FORA da navbar (logo depois dela),
+  // em vez do pill de dentro da barra, que ali sobra/disputa espaço com
+  // hambúrguer e logo em telas estreitas. Mesmo dado, duas apresentações
+  // (troca por CSS, @media max-width:700px — ver styles.css).
+  const faixaMobile = document.createElement('div');
+  faixaMobile.className = 'faixa-cambio-mobile';
+  faixaMobile.innerHTML = `${iconeSvg}<span class="faixa-cambio-mobile-texto">Dólar Rotário…</span>`;
+  barra.parentNode.insertBefore(faixaMobile, barra.nextSibling);
+
   const texto = widget.querySelector('.widget-cambio-texto');
+  const textoMobile = faixaMobile.querySelector('.faixa-cambio-mobile-texto');
 
   fetch(`${prefixo}assets/dolar-rotario.json`)
     .then(r => {
@@ -58,7 +70,9 @@ function montarWidgetCambio(barra, prefixo) {
     .then(dados => {
       const valor = Number(dados && dados.valor);
       if (!valor || isNaN(valor)) throw new Error('conteúdo inesperado em dolar-rotario.json');
-      texto.textContent = `Dólar Rotário: R$ ${valor.toFixed(2).replace('.', ',')}`;
+      const textoValor = `Dólar Rotário: R$ ${valor.toFixed(2).replace('.', ',')}`;
+      texto.textContent = textoValor;
+      textoMobile.textContent = textoValor;
       if (dados.mes) {
         widget.title = `Dólar Rotário — ${dados.mes} (fonte: rotary.org.br, atualizado automaticamente)`;
       }
@@ -67,6 +81,7 @@ function montarWidgetCambio(barra, prefixo) {
       // Arquivo ausente, corrompido, ou automação nunca rodou ainda:
       // melhor sumir com o widget do que travar em "Dólar Rotário…".
       widget.remove();
+      faixaMobile.remove();
     });
 }
 
@@ -169,17 +184,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Logo — a barra ficou vazia depois que o menu de abas virou hambúrguer
   // sempre ativo. Fica clicável e leva pra Início, como é convenção em
-  // quase todo site. EXCETO na própria capa (index.html): lá o logo já
-  // aparece grande no conteúdo da página, ficaria redundante repetir
-  // ele também na navbar.
-  if (paginaAtual !== 'index.html') {
-    const logoLink = document.createElement('a');
-    logoLink.className = 'navbar-logo';
-    logoLink.href = prefixo + 'index.html';
-    logoLink.setAttribute('aria-label', 'Ir para o início');
-    logoLink.innerHTML = `<img src="${prefixo}assets/logo/rotaract-rotary-logo-navbar.png" alt="Rotaract Brasil · Fundação Rotária">`;
-    barra.insertBefore(logoLink, hamburguer.nextSibling);
-  }
+  // quase todo site. Aparece em TODAS as páginas, inclusive a própria
+  // Início (index.html não tem mais capa com logo grande — a home hoje é
+  // navbar + carrossel de projetos + atalhos).
+  const logoLink = document.createElement('a');
+  logoLink.className = 'navbar-logo';
+  logoLink.href = prefixo + 'index.html';
+  logoLink.setAttribute('aria-label', 'Ir para o início');
+  logoLink.innerHTML = `<img src="${prefixo}assets/logo/rotaract-rotary-logo-navbar.png" alt="Rotaract Brasil · Fundação Rotária" width="996" height="154">`;
+  barra.insertBefore(logoLink, hamburguer.nextSibling);
 
   const itensMenuMobile = TABS.map(t => {
     if (t.grupo) {

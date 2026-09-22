@@ -19,26 +19,70 @@
 <nav class="tabs-relatorio" id="tabs-relatorio" aria-label="Navegação do relatório"></nav>
 
 
-<section class="capa">
-  <!--
-    Duas versões da capa, por decisão técnica (mesmo motivo já documentado
-    para fundo fotográfico no README): a imagem do Canva é 1920x1080,
-    fixa — ótima em desktop, mas ilegível/cortada se só ela existisse em
-    telas de celular. Por isso:
-    - Desktop (min-width: 900px): mostra a imagem real do Canva.
-    - Mobile: mostra a versão em texto/CSS, responsiva.
-    O bloco de texto continua no HTML mesmo quando visualmente escondido
-    no desktop, para leitores de tela e SEO não perderem o conteúdo.
-  -->
-  <img src="assets/capa/capa-canva.png" alt="Fundação Rotária 2026-27 — Relatório de Contribuições da Fundação Rotária do Rotaract" class="capa-imagem-real">
-
-  <div class="capa-conteudo capa-conteudo-fallback">
-    <span class="capa-ano">2026-27</span>
-    <h1 class="capa-titulo">Fundação<br><span class="rosa">Rotária</span></h1>
-    <p class="capa-sub">Relatório de Contribuições da Fundação Rotária do Rotaract</p>
+<!--
+  Carrossel de projetos — substitui a antiga capa estática. Gira sozinho
+  pelos projetos cadastrados em js/projetos.js (mesma fonte de dados da
+  aba Projetos, sem duplicar) — ver js/carrossel-home.js pro motor.
+-->
+<section class="carrossel" id="carrossel" aria-roledescription="carrossel" aria-label="Projetos em destaque">
+  <div class="carrossel-viewport" id="carrossel-viewport"></div>
+  <button class="carrossel-nav prev" id="carrossel-prev" aria-label="Projeto anterior">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="carrossel-nav next" id="carrossel-next" aria-label="Próximo projeto">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+  <div class="carrossel-rodape">
+    <div class="carrossel-dots" id="carrossel-dots"></div>
+    <span class="carrossel-contador" id="carrossel-contador"></span>
   </div>
-  <div class="blob-decor cb1"></div>
-  <div class="blob-decor cb2"></div>
+</section>
+
+<section class="atalhos">
+  <div class="grid-atalhos">
+
+    <a class="card-atalho" data-acento="rosa" href="destaques.html">
+      <span class="card-icone">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 4H3.5A1.5 1.5 0 0 0 2 5.5v1A4.5 4.5 0 0 0 6.2 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M18 4h2.5A1.5 1.5 0 0 1 22 5.5v1A4.5 4.5 0 0 1 17.8 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M6 3h12v6a6 6 0 0 1-12 0V3z" fill="currentColor"/>
+          <rect x="10.5" y="15" width="3" height="3" fill="currentColor"/>
+          <rect x="6" y="18" width="12" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </span>
+      <h3>Destaques do mês</h3>
+      <p>Os 3 distritos que mais contribuíram no mês.</p>
+      <span class="seta">Ver os 3 destaques →</span>
+    </a>
+
+    <a class="card-atalho" data-acento="azul" href="estat-geral.html">
+      <span class="card-icone">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"/>
+          <path d="M7 15l4-5 3 3 5-7"/>
+        </svg>
+      </span>
+      <h3>Total de contribuições</h3>
+      <p>Acompanhe em tempo real quanto o Brasil já arrecadou este Ano Rotário.</p>
+      <span class="seta">Ver relatório completo →</span>
+    </a>
+
+    <a class="card-atalho" data-acento="verde" href="#" data-reabrir-tutorial>
+      <span class="card-icone">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M15 9.3c0-1.3-1.3-2.3-3-2.3s-3 1-3 2.3 1.3 2.2 3 2.2 3 1 3 2.3-1.3 2.2-3 2.2-3-1-3-2.2" stroke-width="1.5"/>
+          <line x1="12" y1="5.4" x2="12" y2="7"/>
+          <line x1="12" y1="17" x2="12" y2="18.6"/>
+        </svg>
+      </span>
+      <h3>Como doar</h3>
+      <p>Passo a passo pra dirigentes de distrito e de clube.</p>
+      <span class="seta">Ver como doar →</span>
+    </a>
+
+  </div>
 </section>
 
 
@@ -47,6 +91,8 @@
 </footer>
 <script src="js/portao-entrada.js"></script>
 <script src="js/nav.js" data-pagina-atual="index.html"></script>
+<script src="js/projetos.js"></script>
+<script src="js/carrossel-home.js"></script>
 
 </body>
 </html>
