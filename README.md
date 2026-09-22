@@ -22,7 +22,9 @@ O site funciona como um hub de navegação e comunicação, reunindo:
 - Apresentação da equipe nacional de assessoria;
 - Conteúdo institucional sobre a Fundação Rotária e formas de doar;
 - Portão de entrada (dirigente de distrito × dirigente/associado de clube)
-  com vídeo tutorial de como doar, e cotação do dólar em tempo real na navbar.
+  com vídeo tutorial de como doar, e cotação do dólar em tempo real na navbar;
+- Carrossel rotativo com os projetos por área de enfoque na Início, e
+  atalhos pros destaques do mês, total de contribuição e como doar.
 
 ## Estrutura de páginas
 
@@ -57,7 +59,8 @@ rfr-v2/
 │   ├── portao-entrada.js                             → portão de entrada + modal de vídeo tutorial
 │   ├── destaques.js                                 → destaques mensais
 │   ├── equipe.js                                     → equipe nacional
-│   └── projetos.js                                   → projetos por área de enfoque
+│   ├── projetos.js                                   → projetos por área de enfoque
+│   └── carrossel-home.js                            → carrossel de projetos na Início (lê os dados de projetos.js)
 ├── assets/                                           → imagens e fotos
 └── README.md
 ```
@@ -88,7 +91,10 @@ exibir com base na data atual — não é necessário alterar HTML.
 membro diretamente na lista `EQUIPE`.
 
 **Projetos** (`js/projetos.js`): siga o mesmo padrão para adicionar
-novos projetos por área de enfoque.
+novos projetos por área de enfoque. O carrossel da Início (`index.html`,
+motor em `js/carrossel-home.js`) lê essa mesma lista — não precisa
+cadastrar os projetos em dois lugares, um novo projeto já aparece
+sozinho no carrossel.
 
 ## Portão de entrada + vídeo tutorial
 

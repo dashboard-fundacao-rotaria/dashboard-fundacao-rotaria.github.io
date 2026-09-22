@@ -62,8 +62,6 @@ body{
     var(--faixa-6) 83%, var(--faixa-6) 100%);
 }
 
-.blob-decor{position:absolute;border-radius:50%;z-index:0;pointer-events:none;}
-
 /* ==========================================================================
    2) BARRA DE ABAS — imita a barra de páginas do Looker Studio
    ========================================================================== */
@@ -284,48 +282,6 @@ body{
 }
 
 /* ==========================================================================
-   4) CAPA
-   ========================================================================== */
-.capa{
-  position:relative;overflow:hidden;
-  width:100%;margin:0;padding:0;
-}
-
-/* Imagem real (Canva) — só em telas grandes. Ver comentário no HTML
-   sobre por que não usamos ela sozinha em todas as telas. */
-.capa-imagem-real{display:block;width:100%;height:auto;}
-@media (max-width:899px){
-  .capa-imagem-real{display:none;}
-}
-
-/* Versão em texto/CSS — visível por padrão (mobile). Em telas grandes,
-   fica presente no HTML (leitores de tela e SEO continuam vendo o
-   conteúdo) mas visualmente escondida, já que a imagem real assume. */
-.capa-conteudo-fallback{
-  position:relative;z-index:1;max-width:1180px;margin:0 auto;
-  padding:70px 20px 90px;max-width:640px;
-}
-@media (min-width:900px){
-  .capa-conteudo-fallback{
-    position:absolute !important;width:1px;height:1px;margin:-1px;
-    padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;
-    border:0;
-  }
-  .capa .blob-decor{display:none;} /* a imagem real já tem sua própria decoração */
-}
-
-.capa-ano{font-size:15px;font-weight:700;color:var(--ink);}
-.capa-titulo{
-  font-size:56px;line-height:1.05;font-weight:800;margin:10px 0 18px;
-  letter-spacing:-1px;
-}
-.capa-titulo .rosa{color:var(--rosa);}
-.capa-sub{font-size:16px;color:var(--ink-soft);max-width:46ch;}
-
-.blob-decor.cb1{width:260px;height:260px;background:var(--faixa-2);opacity:.08;top:-60px;right:10%;}
-.blob-decor.cb2{width:140px;height:140px;background:var(--verde);opacity:.10;bottom:0;right:2%;}
-
-/* ==========================================================================
    4b) IMAGEM REAL DO CANVA — full-bleed, compartilhada por Equipe, Guia,
    Sobre e Doação. Mesmo tratamento da capa (seção 4), por isso as regras
    são idênticas às de ".capa"/".capa-imagem-real" — só nomes diferentes.
@@ -354,6 +310,142 @@ body{
 .btn-overlay-real:hover,
 .btn-overlay-real:focus-visible{opacity:.85;}
 .btn-overlay-real:focus-visible{outline:2px solid #fff;outline-offset:-4px;}
+
+/* ==========================================================================
+   4c) CARROSSEL DE PROJETOS (Home) — banner rotativo com os projetos
+   cadastrados em js/projetos.js, no topo da index.html (onde antes
+   ficava a capa). Ver js/carrossel-home.js pro motor.
+   ========================================================================== */
+.carrossel{
+  position:relative;width:100%;height:400px;overflow:hidden;background:#151417;
+}
+.carrossel-viewport{position:relative;width:100%;height:100%;}
+.slide{
+  position:absolute;inset:0;overflow:hidden;
+  display:flex;align-items:center;
+  padding:0 max(20px, calc((100% - 1180px) / 2 + 20px));
+  opacity:0;visibility:hidden;
+  transition:opacity .6s ease;
+}
+.slide.ativo{opacity:1;visibility:visible;}
+/* Foto (background-image inline via JS, não aqui) e degradê ficam em
+   camadas separadas — de propósito, não um "background" só com url()
+   dentro de variável CSS: quando o valor de uma custom property com
+   url() é usado de dentro de um arquivo .css externo (como este, em
+   css/), o caminho relativo resolve a partir da PASTA DO CSS, não do
+   HTML que carregou a página — um comportamento real do CSS que
+   quebrava as fotos (link virava "css/assets/img/...", 404). Setando
+   o background-image direto via style inline (JS) em vez de var(),
+   o caminho relativo resolve certinho a partir do HTML. */
+.slide-foto{
+  position:absolute;inset:0;z-index:0;
+  background-size:cover;background-position:center;
+}
+.slide-degrade{
+  position:absolute;inset:0;z-index:0;
+  background:linear-gradient(90deg, rgba(10,9,12,.86) 0%, rgba(10,9,12,.62) 42%, rgba(10,9,12,.18) 75%);
+}
+.slide-selo-area{
+  position:absolute;right:20px;bottom:16px;z-index:1;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--cor-area);
+  box-shadow:0 0 0 3px rgba(255,255,255,.25);
+}
+.slide-conteudo{position:relative;z-index:1;max-width:560px;color:#fff;}
+.slide-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+  background:rgba(255,255,255,.16);padding:5px 12px 5px 10px;border-radius:100px;
+  margin-bottom:14px;
+}
+.slide-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:#fff;}
+.slide-conteudo h3{
+  margin:0 0 10px;font-size:clamp(22px,3.6vw,30px);font-weight:800;line-height:1.15;
+  text-wrap:balance;
+}
+.slide-conteudo p{
+  margin:0 0 16px;font-size:14px;line-height:1.55;color:rgba(255,255,255,.88);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  max-width:460px;
+}
+.slide-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.slide-pills span{
+  font-size:11.5px;font-weight:700;background:rgba(255,255,255,.16);
+  padding:5px 11px;border-radius:100px;
+}
+.slide-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#fff;color:var(--ink);text-decoration:none;
+  font-size:13.5px;font-weight:800;padding:10px 18px;border-radius:100px;
+}
+.carrossel-nav{
+  position:absolute;z-index:2;top:50%;transform:translateY(-50%);
+  width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,.18);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+.carrossel-nav:hover{background:rgba(255,255,255,.3);}
+.carrossel-nav.prev{left:14px;}
+.carrossel-nav.next{right:14px;}
+.carrossel-rodape{
+  position:absolute;left:0;right:0;bottom:16px;z-index:2;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+}
+.carrossel-dots{display:flex;gap:7px;}
+.carrossel-dots button{
+  width:7px;height:7px;border-radius:50%;border:none;padding:0;cursor:pointer;
+  background:rgba(255,255,255,.4);
+}
+.carrossel-dots button.ativo{background:#fff;width:20px;border-radius:4px;}
+.carrossel-contador{
+  font-size:11.5px;font-weight:700;color:rgba(255,255,255,.75);
+  font-variant-numeric:tabular-nums;
+}
+@media (max-width:760px){
+  .carrossel{height:480px;}
+  .slide{padding:0 20px;align-items:flex-end;padding-bottom:64px;}
+  .slide-degrade{
+    background:linear-gradient(0deg, rgba(10,9,12,.9) 0%, rgba(10,9,12,.55) 45%, rgba(10,9,12,.15) 75%);
+  }
+  .slide-conteudo p{-webkit-line-clamp:3;}
+  /* No mobile o texto agora ocupa quase toda a altura do slide (título +
+     3 linhas de descrição + pills), então as setas fixas no meio
+     verticalmente (padrão do desktop) passavam POR CIMA do texto. Sobem
+     pro topo do slide, onde nunca há conteúdo. */
+  .carrossel-nav{top:16px;transform:none;}
+}
+
+/* ==========================================================================
+   4d) ATALHOS (Home) — os 3 cards logo abaixo do carrossel.
+   ========================================================================== */
+.atalhos{max-width:1180px;margin:0 auto;padding:32px 20px 56px;}
+.grid-atalhos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.card-atalho{
+  background:var(--bg-card);border:1px solid var(--borda);border-radius:16px;
+  padding:22px 20px;text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;gap:10px;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.card-atalho:hover{border-color:var(--acento);transform:translateY(-2px);}
+.card-atalho[data-acento="rosa"]{--acento:var(--rosa);}
+.card-atalho[data-acento="azul"]{--acento:var(--azul);}
+.card-atalho[data-acento="verde"]{--acento:var(--verde);}
+.card-icone{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb, var(--acento) 12%, white);
+  color:var(--acento);
+}
+.card-icone svg{width:20px;height:20px;}
+.card-atalho h3{margin:0;font-size:16px;font-weight:800;}
+.card-atalho p{margin:0;font-size:13px;color:var(--ink-soft);line-height:1.5;}
+.card-atalho .seta{
+  margin-top:auto;font-size:13px;font-weight:700;color:var(--acento);
+  display:flex;align-items:center;gap:4px;
+}
+@media (max-width:760px){
+  .grid-atalhos{grid-template-columns:1fr;}
+}
 
 /* ==========================================================================
    5) CONTAINER PADRÃO DAS PÁGINAS INTERNAS
@@ -714,7 +806,6 @@ select#filtro{
   .duas-colunas{grid-template-columns:1fr;}
   .tres-colunas{grid-template-columns:1fr;}
   .quatro-colunas{grid-template-columns:repeat(2,1fr);}
-  .capa-titulo{font-size:42px;}
 }
 @media (max-width:560px){
   .quatro-colunas{grid-template-columns:1fr;}
@@ -728,7 +819,6 @@ select#filtro{
   .site-header{flex-direction:column;align-items:flex-start;}
   .toolbar{flex-direction:column;align-items:flex-start;}
   select#filtro{width:100%;}
-  .capa-titulo{font-size:34px;}
 }
 
 /* ==========================================================================
@@ -743,23 +833,15 @@ select#filtro{
    de comprimir o widget numa linha compacta quando a tela é estreita.
    ========================================================================== */
 @media (max-width: 700px){
-  .navbar-logo img{height:28px;}
-  /* Quebra a linha antes do widget de câmbio (elemento invisível com
-     flex-basis:100%) pra ele sempre cair numa linha própria abaixo do
-     logo, em vez de disputar espaço na mesma linha do hambúrguer. */
-  .barra-superior::after{
-    content:"";
-    order:1;
-    flex-basis:100%;
-    height:0;
-  }
-  .widget-cambio{
-    order:2;
-    flex:none;
-    margin:8px auto 8px;
-    padding:6px 12px;
-    font-size:12px;
-  }
+  /* Logo com mais destaque no mobile — mais perto do tamanho do desktop
+     (38px) do que antes (28px), já que é o principal elemento de
+     identidade da navbar (index.html não tem mais logo grande na capa). */
+  .navbar-logo img{height:34px;}
+  /* O pill do Dólar Rotário sai da navbar em telas estreitas — sobrava
+     pouco espaço, disputando com hambúrguer/logo. É substituído pela
+     .faixa-cambio-mobile (ver seção 2.1), uma faixa própria logo abaixo
+     da navbar inteira. */
+  .barra-superior .widget-cambio{display:none;}
 }
 
 /* Botão hambúrguer — agora é o menu principal em qualquer tamanho de
@@ -774,12 +856,37 @@ select#filtro{
 }
 
 /* Logo — preenche o espaço que sobrou na barra depois que o menu de
-   abas virou hambúrguer. Altura fixa (a original é bem larga: 974×373),
+   abas virou hambúrguer. Altura fixa (a original é bem larga: 996×154),
    largura acompanha proporcionalmente. */
 .navbar-logo{
   display:flex;align-items:center;flex:none;margin:0 4px 0 10px;
+  overflow:hidden;
 }
-.navbar-logo img{height:38px;width:auto;display:block;}
+/* O PNG (assets/logo/rotaract-rotary-logo-navbar.png) tem ~10,44% de
+   margem transparente só do lado esquerdo (104px de 996px totais, medido
+   pixel a pixel) — sem essa correção, o logo parece descentralizado,
+   com um vão vazio entre ele e o hambúrguer. Corrigido deslocando a
+   imagem pela própria largura (% em transform é relativo ao elemento,
+   funciona igual em qualquer tamanho de tela) — sem precisar reexportar
+   o arquivo. .navbar-logo com overflow:hidden recorta a sobra que isso
+   empurra pra fora da caixa à esquerda.  */
+.navbar-logo img{height:38px;width:auto;display:block;transform:translateX(-10.44%);}
+
+/* Faixa do Dólar Rotário pro mobile — ver .widget-cambio (seção 2.1)
+   pro equivalente do desktop. Fica FORA da navbar (logo depois dela,
+   via JS em montarWidgetCambio) pra não disputar espaço com
+   hambúrguer/logo nem encostar direto neles. */
+.faixa-cambio-mobile{
+  display:none;
+  align-items:center;justify-content:center;gap:5px;
+  padding:5px 16px;
+  background:#eaf5fc;
+  font-size:11px;font-weight:700;color:var(--azul);
+}
+.faixa-cambio-mobile svg{flex:none;width:10px;height:10px;}
+@media (max-width:700px){
+  .faixa-cambio-mobile{display:flex;}
+}
 
 /* Painel lateral do menu mobile — mesma linguagem visual do modal de
    acesso (fundo escurecido + painel branco), só que lateral e com lista
