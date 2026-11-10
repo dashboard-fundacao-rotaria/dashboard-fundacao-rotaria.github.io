@@ -680,6 +680,10 @@ body{
 .membro-foto{
   width:112px;height:112px;border-radius:50%;object-fit:cover;flex:none;
   background:#eee;
+  /* As fotos já vêm recortadas em círculo, mas com uma fina margem clara
+     em volta antes da borda da imagem — sem o zoom, essa margem aparece
+     como um "anel branco" dentro do círculo. */
+  transform:scale(1.18);
 }
 .membro-cargo{font-size:11.5px;font-weight:700;color:var(--rosa);margin:0;text-transform:uppercase;letter-spacing:.3px;}
 .membro-nome{font-size:16px;font-weight:700;margin:2px 0 0;}
