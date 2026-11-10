@@ -606,6 +606,26 @@ body{
 .card-destaque.bronze{border-color:#a8622f;}
 @media (max-width:700px){
   .card-destaque.ouro{padding-bottom:24px;}
+  /* Empilhados em coluna única no mobile, os cards viram lista — a
+     ordem "prata, ouro, bronze" do pódio (arranjo visual do desktop,
+     prata à esquerda / ouro elevado no meio / bronze à direita) não faz
+     sentido aqui. "order" reorganiza só visualmente pra ouro > prata >
+     bronze, sem tocar no HTML/JS (nem no id gerado pra cada card). */
+  .card-destaque.ouro{order:1;}
+  .card-destaque.prata{order:2;}
+  .card-destaque.bronze{order:3;}
+  /* O troféu flutua 62px ACIMA do próprio card (efeito pódio) — no
+     desktop tem espaço de sobra acima do grid pra isso. Empilhado em
+     coluna, com só 22px de vão entre os cards, o troféu do card de
+     baixo invadia o texto do card de cima. Aqui ele volta pro fluxo
+     normal, dentro do próprio card, acima da etiqueta. */
+  .trofeu{
+    position:relative;
+    top:0;left:auto;
+    transform:none;
+    display:block;
+    margin:0 auto 6px;
+  }
 }
 
 /* ==========================================================================
