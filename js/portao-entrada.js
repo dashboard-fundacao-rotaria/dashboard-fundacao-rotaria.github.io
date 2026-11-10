@@ -27,15 +27,15 @@ const CHAVE_ESCOLHA_PAPEL = 'papelVisitante';
 // papéis (ver MENUS logo abaixo), sem precisar duplicar o embed.
 const VIDEOS = {
   'distrito-desktop': {
-    titulo: 'Relatório de distrito (computador)',
+    titulo: 'Relatório de distrito (computador) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/1plY78matwzD-o_1Gk_WlchnjwdvcoUXj/preview',
   },
   'distrito-mobile': {
-    titulo: 'Relatório de distrito (celular)',
+    titulo: 'Relatório de distrito (celular) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/17L_KZ5v9Au2GRpPyQljWN2xEZx3H8s66/preview',
   },
   'associado': {
-    titulo: 'Relatório de associado',
+    titulo: 'Relatório de associado — Rotary Club Central',
     embed: 'https://drive.google.com/file/d/17wplHHsarypwOnWaeVqI8CTjlqKQhYtA/preview',
   },
   'cartao': {
