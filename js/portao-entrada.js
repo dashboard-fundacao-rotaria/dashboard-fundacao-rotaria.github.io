@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   overlayMenu.innerHTML = `
     <div class="menu-modal" role="dialog" aria-modal="true" aria-label="Vídeos tutoriais">
       <button type="button" class="menu-fechar" aria-label="Fechar">&times;</button>
-      <h2>Como doar</h2>
+      <h2>Vídeos tutoriais</h2>
       <div class="menu-topicos"></div>
     </div>`;
   document.body.appendChild(overlayMenu);
@@ -141,16 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const escolhaJaFeita = sessionStorage.getItem(CHAVE_ESCOLHA_PAPEL);
 
-  // Link "Como doar? Assista de novo" no rodapé — só depois de já ter
-  // escolhido um papel (antes disso, o próprio portão está prestes a
-  // aparecer, então não faz sentido oferecer o link ainda).
+  // Link "Vídeos tutoriais" no rodapé — só depois de já ter escolhido um
+  // papel (antes disso, o próprio portão está prestes a aparecer, então
+  // não faz sentido oferecer o link ainda).
   const rodape = document.querySelector('.site-footer');
   if (rodape && escolhaJaFeita) {
     const link = document.createElement('button');
     link.type = 'button';
     link.className = 'link-tutorial';
     link.setAttribute('data-reabrir-tutorial', '');
-    link.textContent = 'Como doar? Assista de novo';
+    link.textContent = 'Vídeos tutoriais';
     rodape.insertBefore(link, rodape.firstChild);
   }
 
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.type = 'button';
         link.className = 'link-tutorial';
         link.setAttribute('data-reabrir-tutorial', '');
-        link.textContent = 'Como doar? Assista de novo';
+        link.textContent = 'Vídeos tutoriais';
         rodape.insertBefore(link, rodape.firstChild);
       }
     });
