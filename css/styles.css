@@ -262,12 +262,20 @@ body{
 .video-wrap{
   position:relative;
   padding-top:56.25%; /* proporção 16:9 */
-  min-height:260px; /* no mobile, 16:9 de uma largura estreita fica baixo
-    demais pro player do Drive (que tem uma barra própria no topo) —
-    isso cortava o vídeo/botão de play. */
   border-radius:10px;
   overflow:hidden;
   background:#000;
+}
+@media (max-width:700px){
+  /* No mobile a largura do modal é pequena, então 16:9 vira uma caixa
+     baixa demais pro player de preview do Drive (que tem uma barra
+     própria e não se resume só ao vídeo) — o vídeo ficava cortado e o
+     botão de play desalinhado. Trocamos a razão largura/altura por uma
+     altura proporcional à TELA (vh), não à largura do modal, dando
+     espaço de sobra; o scroll do modal cobre o resto se precisar. */
+  .video-overlay{padding:10px;}
+  .video-modal{padding:18px;}
+  .video-wrap{padding-top:0;height:65vh;min-height:320px;}
 }
 .video-iframe{
   position:absolute;inset:0;
