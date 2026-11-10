@@ -282,6 +282,14 @@ body{
   width:100%;height:100%;
   border:0;
 }
+@media (max-width:700px){
+  /* O player de preview do Drive (outro domínio, não dá pra restilizar
+     por dentro) reserva uma barra própria só no topo — isso empurra o
+     botão de play pra baixo do centro da caixa. Deixamos o iframe um
+     pouco mais alto que a caixa e deslocado pra cima: o overflow:hidden
+     do .video-wrap corta essa barra, e o vídeo em si fica recentralizado. */
+  .video-iframe{top:-24px;height:calc(100% + 24px);}
+}
 
 /* Menu de tópicos — abre depois da escolha de papel no portão, lista os
    vídeos daquele papel (ver TOPICOS em js/portao-entrada.js). Fica ATRÁS
