@@ -141,11 +141,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const escolhaJaFeita = sessionStorage.getItem(CHAVE_ESCOLHA_PAPEL);
 
+  // Na Início o link do rodapé seria redundante — o card "Vídeos
+  // tutoriais" ali já faz a mesma coisa. Nas outras páginas continua
+  // aparecendo, porque elas não têm esse card.
+  const scriptNav = document.querySelector('script[data-pagina-atual]');
+  const naHome = scriptNav && scriptNav.dataset.paginaAtual === 'index.html';
+
   // Link "Vídeos tutoriais" no rodapé — só depois de já ter escolhido um
   // papel (antes disso, o próprio portão está prestes a aparecer, então
   // não faz sentido oferecer o link ainda).
   const rodape = document.querySelector('.site-footer');
-  if (rodape && escolhaJaFeita) {
+  if (rodape && escolhaJaFeita && !naHome) {
     const link = document.createElement('button');
     link.type = 'button';
     link.className = 'link-tutorial';
@@ -177,8 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
       overlayPortao.remove();
       abrirMenu(papel);
       // Agora que a escolha foi feita, adiciona o link do rodapé também
-      // nesta mesma página (sem precisar recarregar).
-      if (rodape && !rodape.querySelector('[data-reabrir-tutorial]')) {
+      // nesta mesma página (sem precisar recarregar) — exceto na Início,
+      // que já tem o card fazendo a mesma coisa.
+      if (rodape && !naHome && !rodape.querySelector('[data-reabrir-tutorial]')) {
         const link = document.createElement('button');
         link.type = 'button';
         link.className = 'link-tutorial';
