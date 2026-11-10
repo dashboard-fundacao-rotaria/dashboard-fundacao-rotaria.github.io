@@ -262,6 +262,9 @@ body{
 .video-wrap{
   position:relative;
   padding-top:56.25%; /* proporção 16:9 */
+  min-height:260px; /* no mobile, 16:9 de uma largura estreita fica baixo
+    demais pro player do Drive (que tem uma barra própria no topo) —
+    isso cortava o vídeo/botão de play. */
   border-radius:10px;
   overflow:hidden;
   background:#000;
