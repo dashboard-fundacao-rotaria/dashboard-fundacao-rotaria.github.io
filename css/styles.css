@@ -261,15 +261,22 @@ body{
 }
 .video-wrap{
   position:relative;
-  padding-top:56.25%; /* proporção 16:9 — o preview do Drive é desenhado
-    pra esse formato; forçar outra proporção (já tentamos) bagunça o
-    layout interno dele (chegou a mostrar o nome do arquivo em letras
-    gigantes em vez do vídeo). Melhor manter 16:9 e aproveitar mais
-    largura no mobile (ver media query abaixo) do que distorcer a
-    proporção. */
+  padding-top:56.25%; /* proporção 16:9 — formato padrão, gravações de
+    computador (horizontal). */
   border-radius:10px;
   overflow:hidden;
   background:#000;
+}
+.video-wrap.video-wrap-retrato{
+  /* Gravação de celular (vertical, 9:16) — caixa estreita e alta em vez
+     de larga e baixa, senão o vídeo fica espremido numa proporção que
+     não é a dele. Centralizada e com teto de altura pra não estourar a
+     tela em telas baixas (o modal já tem scroll se precisar). */
+  padding-top:0;
+  aspect-ratio:9/16;
+  width:min(100%, 280px);
+  max-height:70vh;
+  margin:0 auto;
 }
 @media (max-width:700px){
   /* Aproveita o máximo de largura possível na tela — com 16:9 mantido,

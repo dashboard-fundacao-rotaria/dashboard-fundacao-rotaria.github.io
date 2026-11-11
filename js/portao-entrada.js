@@ -33,6 +33,9 @@ const VIDEOS = {
   'distrito-mobile': {
     titulo: 'Relatório de distrito (celular) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/17L_KZ5v9Au2GRpPyQljWN2xEZx3H8s66/preview',
+    // Gravação de tela de celular — formato vertical. Os outros vídeos
+    // são gravações de computador (horizontal, 16:9 padrão).
+    retrato: true,
   },
   'associado': {
     titulo: 'Relatório de associado — Rotary Club Central',
@@ -80,6 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!v) return;
     overlayVideo.querySelector('.video-titulo').textContent = v.titulo;
     overlayVideo.querySelector('.video-iframe').src = v.embed;
+    // Vídeo gravado na vertical (celular) usa uma caixa estreita e alta
+    // (9:16) em vez do 16:9 padrão — senão a gravação vertical fica
+    // espremida/cortada numa caixa pensada pra horizontal.
+    overlayVideo.querySelector('.video-wrap').classList.toggle('video-wrap-retrato', !!v.retrato);
     overlayVideo.classList.add('aberto');
   }
   function fecharVideo() {
