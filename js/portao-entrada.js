@@ -25,39 +25,32 @@ const CHAVE_ESCOLHA_PAPEL = 'papelVisitante';
 
 // Cada vídeo, uma vez só — "cartao" e "boleto" são usados pelos dois
 // papéis (ver MENUS logo abaixo), sem precisar duplicar o embed.
-// Todos exportados do CapCut no formato vertical (Stories/Reels, 9:16),
-// independente do que foi gravado na tela (computador ou celular) — por
-// isso todos usam a caixa retrato, não só o "distrito-mobile".
+// Todo vídeo abre girado 90° (ver abrirVideo) — sem distinção por
+// formato.
 const VIDEOS = {
   'distrito-desktop': {
     titulo: 'Relatório de distrito (computador) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/1plY78matwzD-o_1Gk_WlchnjwdvcoUXj/preview',
-    retrato: true,
   },
   'distrito-mobile': {
     titulo: 'Relatório de distrito (celular) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/17L_KZ5v9Au2GRpPyQljWN2xEZx3H8s66/preview',
-    retrato: true,
   },
   'associado': {
     titulo: 'Relatório de associado — Rotary Club Central',
     embed: 'https://drive.google.com/file/d/17wplHHsarypwOnWaeVqI8CTjlqKQhYtA/preview',
-    retrato: true,
   },
   'cartao': {
     titulo: 'Contribuição via cartão de crédito',
     embed: 'https://drive.google.com/file/d/1kqqhTLrngb8dR8YlEHk-7N1ty5se3Igw/preview',
-    retrato: true,
   },
   'boleto': {
     titulo: 'Contribuição via boleto',
     embed: 'https://drive.google.com/file/d/1IeRgDJbnJmIWNrOyF7Qc31v4ZaWRXi-k/preview',
-    retrato: true,
   },
   'filtro': {
     titulo: 'Utilizando filtro de pesquisa',
     embed: 'https://drive.google.com/file/d/1Mm6WV-MkJLZSPQNpr1Ncsz-Q5XUN0nM3/preview',
-    retrato: true,
   },
 };
 
@@ -93,17 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayVideo.querySelector('.video-iframe').src = v.embed;
     overlayVideo.classList.add('aberto');
 
-    // Vídeo exportado em formato vertical (9:16) — gira o player 90°,
-    // como se a tela estivesse deitada, pra preencher a caixa 16:9
-    // normal em vez de ficar espremido/cortado nela. O tamanho é
-    // calculado em pixels (não em %) depois que a caixa já está
-    // visível, pra não depender de contas de porcentagem em cima de um
-    // elemento transformado — mais simples e mais confiável entre
-    // navegadores.
+    // Só no mobile todo vídeo abre girado 90°, como se a tela estivesse
+    // deitada — no desktop já abre certo do jeito normal (16:9), sem
+    // precisar disso. O tamanho é calculado em pixels (não em %) depois
+    // que a caixa já está visível.
     const wrap = overlayVideo.querySelector('.video-wrap');
     const rotador = overlayVideo.querySelector('.video-rotador');
-    rotador.classList.toggle('video-rotador-girado', !!v.retrato);
-    if (v.retrato) {
+    const noMobile = window.matchMedia('(max-width:700px)').matches;
+    rotador.classList.toggle('video-rotador-girado', noMobile);
+    if (noMobile) {
       requestAnimationFrame(() => {
         rotador.style.width = wrap.clientHeight + 'px';
         rotador.style.height = wrap.clientWidth + 'px';
