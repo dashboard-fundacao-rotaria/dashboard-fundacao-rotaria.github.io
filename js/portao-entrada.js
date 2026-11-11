@@ -70,11 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="button" class="video-fechar" aria-label="Fechar">&times;</button>
       <h2 class="video-titulo"></h2>
       <div class="video-wrap">
-        <div class="video-rotador">
-          <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
-        </div>
+        <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
       </div>
     </div>`;
   document.body.appendChild(overlayVideo);
@@ -86,40 +84,37 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayVideo.querySelector('.video-iframe').src = v.embed;
     overlayVideo.classList.add('aberto');
 
-    // Só no mobile todo vídeo abre girado 90°, como se a tela estivesse
-    // deitada — no desktop já abre certo do jeito normal (16:9), sem
-    // precisar disso.
-    //
-    // O player do Drive parece ter um modo "compacto" (quebrado, com
-    // ícones/textos fora do lugar) que ativa quando o iframe recebe uma
-    // largura pequena — é o que sempre aconteceu no mobile, rotacionado
-    // ou não. Pra evitar isso, o .video-rotador SEMPRE recebe um
-    // tamanho interno grande e fixo (LARGURA_INTERNA x ALTURA_INTERNA,
-    // bem maior que qualquer tela), e só a ESCALA visual (scale) é
-    // ajustada pro tamanho real da caixa — o Drive sempre "pensa" que
-    // está num espaço grande, só aparece menor na tela.
-    const LARGURA_INTERNA = 720;
-    const ALTURA_INTERNA = 1280; // 9:16, bem maior que qualquer tela de celular
-    const wrap = overlayVideo.querySelector('.video-wrap');
-    const rotador = overlayVideo.querySelector('.video-rotador');
-    const noMobile = window.matchMedia('(max-width:700px)').matches;
-    rotador.classList.toggle('video-rotador-girado', noMobile);
-    if (noMobile) {
-      requestAnimationFrame(() => {
-        // Depois de girar 90°, a largura visual vem da ALTURA interna
-        // (720×1280 girado "deita": o lado de 1280 passa a ser o lado
-        // largo) — por isso a escala usa a largura da caixa dividida
-        // pela altura interna, não pela largura interna.
-        const escala = wrap.clientWidth / ALTURA_INTERNA;
-        rotador.style.setProperty('--escala', escala);
-      });
-    } else {
-      rotador.style.removeProperty('--escala');
+    // No mobile, pede tela cheia + tenta travar a orientação em
+    // paisagem automaticamente (sem a pessoa precisar virar o
+    // celular). Precisa ser chamado direto no clique (sem await antes)
+    // pra o navegador permitir.
+    // IMPORTANTE: trava de orientação automática só funciona em
+    // Android/Chrome — no iPhone (Safari), a Apple não permite um site
+    // forçar a rotação da tela por código (restrição da plataforma, não
+    // dá pra contornar). No iPhone, só a tela cheia funciona; a pessoa
+    // ainda precisa virar o aparelho na mão pra ver deitado.
+    if (window.matchMedia('(max-width:700px)').matches) {
+      const modal = overlayVideo.querySelector('.video-modal');
+      const pedido = modal.requestFullscreen
+        ? modal.requestFullscreen()
+        : modal.webkitRequestFullscreen
+        ? Promise.resolve(modal.webkitRequestFullscreen())
+        : null;
+      if (pedido) {
+        pedido.then(() => {
+          if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(() => {});
+          }
+        }).catch(() => {});
+      }
     }
   }
   function fecharVideo() {
     overlayVideo.classList.remove('aberto');
     overlayVideo.querySelector('.video-iframe').src = ''; // para a reprodução ao fechar
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+    if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
   }
   overlayVideo.querySelector('.video-fechar').addEventListener('click', fecharVideo);
   overlayVideo.addEventListener('click', (e) => { if (e.target === overlayVideo) fecharVideo(); });

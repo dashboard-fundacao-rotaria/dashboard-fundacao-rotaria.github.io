@@ -261,34 +261,34 @@ body{
 }
 .video-wrap{
   position:relative;
-  padding-top:56.25%; /* proporção 16:9 — caixa do player, sempre nesse
-    formato (ver .video-rotador pra vídeo vertical). */
+  padding-top:56.25%; /* proporção 16:9 */
   border-radius:10px;
   overflow:hidden;
   background:#000;
-}
-.video-rotador{
-  position:absolute;inset:0;
-}
-.video-rotador.video-rotador-girado{
-  /* Gira o player 90° (como quem deita o celular de lado), pra caixa
-     16:9 por fora mostrar o vídeo vertical inteiro, sem cortar.
-     Tamanho interno SEMPRE grande e fixo (720×1280 — bem maior que
-     qualquer celular) pra não ativar o modo "compacto" do player do
-     Drive, que vem quebrado (ícones fora do lugar, texto gigante)
-     quando o iframe recebe uma largura pequena. --escala (calculada via
-     JS, em abrirVideo) encolhe isso visualmente pro tamanho real da
-     caixa, sem mexer no tamanho que o Drive "enxerga" por dentro. */
-  width:720px;
-  height:1280px;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(90deg) scale(var(--escala,1));
-  transform-origin:center center;
 }
 .video-iframe{
   position:absolute;inset:0;
   width:100%;height:100%;
   border:0;
+}
+/* Modal em tela cheia (pedida via JS no mobile, ver abrirVideo em
+   js/portao-entrada.js) — a caixa do vídeo ocupa o espaço disponível
+   de verdade, sem limite de largura/altura do modal normal. */
+.video-modal:fullscreen,
+.video-modal:-webkit-full-screen{
+  max-width:none;
+  width:100vw;
+  height:100vh;
+  max-height:none;
+  border-radius:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.video-modal:fullscreen .video-wrap,
+.video-modal:-webkit-full-screen .video-wrap{
+  padding-top:0;
+  flex:1;
 }
 
 /* Menu de tópicos — abre depois da escolha de papel no portão, lista os
