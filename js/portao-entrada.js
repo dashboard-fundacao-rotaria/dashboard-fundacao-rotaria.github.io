@@ -99,7 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // e o que aparece na tela é sempre esse mesmo resultado que já
     // funciona, só menor e de lado.
     const modal = overlayVideo.querySelector('.video-modal');
-    const noMobile = window.matchMedia('(max-width:700px)').matches;
+    // Só com o celular EM PÉ: deitado a tela já é paisagem (um iPhone SE
+    // deitado tem 667px, abaixo dos 700) e girar de novo deixaria de lado.
+    const noMobile = window.matchMedia('(max-width:700px) and (orientation:portrait)').matches;
     modal.classList.toggle('video-modal-girado', noMobile);
     if (noMobile) {
       modal.style.transform = '';
