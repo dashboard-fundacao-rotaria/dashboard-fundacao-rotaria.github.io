@@ -70,9 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="button" class="video-fechar" aria-label="Fechar">&times;</button>
       <h2 class="video-titulo"></h2>
       <div class="video-wrap">
-        <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
+        <div class="video-rotador">
+          <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
       </div>
     </div>`;
   document.body.appendChild(overlayVideo);
@@ -84,37 +86,26 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayVideo.querySelector('.video-iframe').src = v.embed;
     overlayVideo.classList.add('aberto');
 
-    // No mobile, pede tela cheia + tenta travar a orientação em
-    // paisagem automaticamente (sem a pessoa precisar virar o
-    // celular). Precisa ser chamado direto no clique (sem await antes)
-    // pra o navegador permitir.
-    // IMPORTANTE: trava de orientação automática só funciona em
-    // Android/Chrome — no iPhone (Safari), a Apple não permite um site
-    // forçar a rotação da tela por código (restrição da plataforma, não
-    // dá pra contornar). No iPhone, só a tela cheia funciona; a pessoa
-    // ainda precisa virar o aparelho na mão pra ver deitado.
-    if (window.matchMedia('(max-width:700px)').matches) {
-      const modal = overlayVideo.querySelector('.video-modal');
-      const pedido = modal.requestFullscreen
-        ? modal.requestFullscreen()
-        : modal.webkitRequestFullscreen
-        ? Promise.resolve(modal.webkitRequestFullscreen())
-        : null;
-      if (pedido) {
-        pedido.then(() => {
-          if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => {});
-          }
-        }).catch(() => {});
-      }
+    // Só o PLAYER gira 90° no mobile (a página inteira continua na
+    // vertical atrás, sem tela cheia e sem mexer na tela do celular) —
+    // como quem deita só o vídeo de lado dentro da caixa 16:9 normal.
+    const wrap = overlayVideo.querySelector('.video-wrap');
+    const rotador = overlayVideo.querySelector('.video-rotador');
+    const noMobile = window.matchMedia('(max-width:700px)').matches;
+    rotador.classList.toggle('video-rotador-girado', noMobile);
+    if (noMobile) {
+      requestAnimationFrame(() => {
+        rotador.style.width = wrap.clientHeight + 'px';
+        rotador.style.height = wrap.clientWidth + 'px';
+      });
+    } else {
+      rotador.style.width = '';
+      rotador.style.height = '';
     }
   }
   function fecharVideo() {
     overlayVideo.classList.remove('aberto');
     overlayVideo.querySelector('.video-iframe').src = ''; // para a reprodução ao fechar
-    if (document.fullscreenElement) document.exitFullscreen();
-    else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
-    if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
   }
   overlayVideo.querySelector('.video-fechar').addEventListener('click', fecharVideo);
   overlayVideo.addEventListener('click', (e) => { if (e.target === overlayVideo) fecharVideo(); });
