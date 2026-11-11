@@ -271,15 +271,18 @@ body{
   position:absolute;inset:0;
 }
 .video-rotador.video-rotador-girado{
-  /* Vídeo exportado em formato vertical (9:16) — em vez de espremer
-     essa proporção dentro da caixa 16:9 (cortando as laterais), giramos
-     o player 90°, como quem deita o celular de lado: a caixa continua
-     16:9 por fora, mas o vídeo vertical passa a preenchê-la inteira,
-     sem cortar nem sobrar moldura. O width/height em pixels é calculado
-     e aplicado via JS (abrirVideo, em js/portao-entrada.js) — aqui só
-     fica o giro em si. */
+  /* Gira o player 90° (como quem deita o celular de lado), pra caixa
+     16:9 por fora mostrar o vídeo vertical inteiro, sem cortar.
+     Tamanho interno SEMPRE grande e fixo (720×1280 — bem maior que
+     qualquer celular) pra não ativar o modo "compacto" do player do
+     Drive, que vem quebrado (ícones fora do lugar, texto gigante)
+     quando o iframe recebe uma largura pequena. --escala (calculada via
+     JS, em abrirVideo) encolhe isso visualmente pro tamanho real da
+     caixa, sem mexer no tamanho que o Drive "enxerga" por dentro. */
+  width:720px;
+  height:1280px;
   top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(90deg);
+  transform:translate(-50%,-50%) rotate(90deg) scale(var(--escala,1));
   transform-origin:center center;
 }
 .video-iframe{

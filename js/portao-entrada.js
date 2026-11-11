@@ -88,20 +88,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Só no mobile todo vídeo abre girado 90°, como se a tela estivesse
     // deitada — no desktop já abre certo do jeito normal (16:9), sem
-    // precisar disso. O tamanho é calculado em pixels (não em %) depois
-    // que a caixa já está visível.
+    // precisar disso.
+    //
+    // O player do Drive parece ter um modo "compacto" (quebrado, com
+    // ícones/textos fora do lugar) que ativa quando o iframe recebe uma
+    // largura pequena — é o que sempre aconteceu no mobile, rotacionado
+    // ou não. Pra evitar isso, o .video-rotador SEMPRE recebe um
+    // tamanho interno grande e fixo (LARGURA_INTERNA x ALTURA_INTERNA,
+    // bem maior que qualquer tela), e só a ESCALA visual (scale) é
+    // ajustada pro tamanho real da caixa — o Drive sempre "pensa" que
+    // está num espaço grande, só aparece menor na tela.
+    const LARGURA_INTERNA = 720;
+    const ALTURA_INTERNA = 1280; // 9:16, bem maior que qualquer tela de celular
     const wrap = overlayVideo.querySelector('.video-wrap');
     const rotador = overlayVideo.querySelector('.video-rotador');
     const noMobile = window.matchMedia('(max-width:700px)').matches;
     rotador.classList.toggle('video-rotador-girado', noMobile);
     if (noMobile) {
       requestAnimationFrame(() => {
-        rotador.style.width = wrap.clientHeight + 'px';
-        rotador.style.height = wrap.clientWidth + 'px';
+        // Depois de girar 90°, a largura visual vem da ALTURA interna
+        // (720×1280 girado "deita": o lado de 1280 passa a ser o lado
+        // largo) — por isso a escala usa a largura da caixa dividida
+        // pela altura interna, não pela largura interna.
+        const escala = wrap.clientWidth / ALTURA_INTERNA;
+        rotador.style.setProperty('--escala', escala);
       });
     } else {
-      rotador.style.width = '';
-      rotador.style.height = '';
+      rotador.style.removeProperty('--escala');
     }
   }
   function fecharVideo() {
