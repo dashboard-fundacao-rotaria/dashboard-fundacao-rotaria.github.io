@@ -28,8 +28,7 @@ const EQUIPE = [
   },
   {
     cargo: "Assessor FR - Área 29",
-    // Falta o sobrenome do Abraão — assim que você passar, é só completar aqui.
-    nome: "Abraão",
+    nome: "Abraão Andrade",
     info: "Rotaract Club de Tenente Ananias · Distrito 4500",
     descricao: "Responsável por apoiar os distritos da Área 29 no fortalecimento das contribuições à Fundação Rotária e acompanhar o progresso ao longo do Ano Rotário 2026-27.",
     foto: "assets/equipe/abraao.jpg"

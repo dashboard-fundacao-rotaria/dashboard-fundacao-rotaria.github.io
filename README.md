@@ -41,7 +41,7 @@ O site funciona como um hub de navegação e comunicação, reunindo:
 | Doações por Fundo | `estat-fundo.html` |
 | QTD Rotary Direct | `rotary-direct.html` |
 | ABTRF | `abtrf.html` |
-| Campanhas | `campanhas.html` |
+| Campanhas (fora do menu até ter conteúdo) | `campanhas.html` |
 | Fale Conosco | `contato.html` |
 
 O menu de navegação é gerado dinamicamente por `js/nav.js` a partir de
