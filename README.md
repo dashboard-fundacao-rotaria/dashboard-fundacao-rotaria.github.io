@@ -21,8 +21,9 @@ O site funciona como um hub de navegação e comunicação, reunindo:
 - As regras oficiais do Programa de Reconhecimento da Fundação Rotária;
 - Apresentação da equipe nacional de assessoria;
 - Conteúdo institucional sobre a Fundação Rotária e formas de doar;
-- Portão de entrada (dirigente de distrito × dirigente/associado de clube)
-  com vídeo tutorial de como doar, e cotação do dólar em tempo real na navbar;
+- Portão de entrada (dirigente de distrito × membro de clube) com menu
+  de vídeos tutoriais de como doar, e cotação do dólar em tempo real na
+  navbar;
 - Carrossel rotativo com os projetos por área de enfoque na Início, e
   atalhos pros destaques do mês, total de contribuição e como doar.
 
@@ -40,7 +41,7 @@ O site funciona como um hub de navegação e comunicação, reunindo:
 | Doações por Fundo | `estat-fundo.html` |
 | QTD Rotary Direct | `rotary-direct.html` |
 | ABTRF | `abtrf.html` |
-| Campanhas | `campanhas.html` |
+| Campanhas (fora do menu até ter conteúdo) | `campanhas.html` |
 | Fale Conosco | `contato.html` |
 
 O menu de navegação é gerado dinamicamente por `js/nav.js` a partir de
@@ -96,18 +97,22 @@ motor em `js/carrossel-home.js`) lê essa mesma lista — não precisa
 cadastrar os projetos em dois lugares, um novo projeto já aparece
 sozinho no carrossel.
 
-## Portão de entrada + vídeo tutorial
+## Portão de entrada + vídeos tutoriais
 
 `js/portao-entrada.js` mostra, na primeira página que a pessoa abrir em
 cada sessão do navegador, um popup obrigatório (não é possível fechar
 sem escolher) perguntando se ela é "dirigente do seu distrito" ou
-"dirigente/associado de clube". Depois da escolha, abre um segundo modal
-(esse fechável) com um vídeo tutorial de como doar — um vídeo diferente
-por papel escolhido.
+"membro do seu clube". Depois da escolha, abre um menu (esse fechável)
+com os vídeos tutoriais relevantes pro papel — cada papel vê uma lista
+diferente (ver `MENUS` no topo do arquivo). Escolhendo um vídeo, ele
+abre por cima do menu; fechando o vídeo, volta pro menu, sem precisar
+escolher o papel de novo.
 
-**Pendência:** as URLs reais dos dois vídeos ainda precisam ser
-preenchidas em `VIDEOS_TUTORIAL` no topo de `js/portao-entrada.js`
-(procure por `SUBSTITUIR_PELA_URL_DE_EMBED_DO_VIDEO_...`).
+Os vídeos ficam hospedados no Google Drive, numa pasta compartilhada só
+com a equipe — cada arquivo individual precisa estar com permissão
+"Qualquer pessoa com o link → Leitor" (não "Editor") pra funcionar
+embutido no site sem abrir brecha de edição. Pra adicionar ou trocar um
+vídeo: cadastre o embed em `VIDEOS` e referencie a chave em `MENUS`.
 
 ## Dólar Rotário na navbar (atualizado sozinho)
 

@@ -215,6 +215,7 @@ body{
   border:1.5px solid var(--borda);
   border-radius:10px;
   cursor:pointer;
+  user-select:none;
   transition:border-color .15s ease, background .15s ease, color .15s ease;
 }
 .portao-opcao:hover{border-color:var(--rosa);background:#fdf0f5;color:var(--rosa);}
@@ -228,16 +229,41 @@ body{
   align-items:center;
   justify-content:center;
   padding:20px;
+  overflow-y:auto;
 }
 .video-overlay.aberto{display:flex;}
+/* Textos dos modais não são selecionáveis: sem isso o cursor vira a
+   barrinha de texto ao passar sobre títulos e botões. */
+.portao-modal,.video-modal,.menu-modal{
+  user-select:none;
+  -webkit-user-select:none;
+  cursor:default;
+}
 .video-modal{
   position:relative;
   width:100%;
-  max-width:720px;
+  /* Também limitada pela ALTURA da tela: em celular deitado (tela larga
+     e baixa) os 720px deixavam o vídeo 16:9 mais alto que a tela. A
+     conta reserva espaço pro título/padding e converte a altura que
+     sobra em largura 16:9. Em telas altas o limite de 720px é que vale. */
+  max-width:min(720px, calc((90vh - 120px) * 16 / 9 + 48px));
+  max-height:90vh;
+  overflow-y:auto;
   background:#fff;
   border-radius:16px;
   padding:24px;
   box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+@media (max-height:500px){
+  /* Tela baixa (celular deitado): menos moldura, mais vídeo. */
+  .video-modal{
+    padding:14px 18px;
+    max-width:min(720px, calc((94vh - 80px) * 16 / 9 + 36px));
+    max-height:94vh;
+  }
+  .video-overlay{padding:3vh 20px;}
+  .video-titulo{font-size:15px;margin-bottom:8px;}
+  .video-fechar{top:8px;right:10px;}
 }
 .video-titulo{
   margin:0 0 14px;
@@ -253,6 +279,7 @@ body{
   font-size:24px;line-height:1;
   color:var(--ink-soft);
   cursor:pointer;
+  user-select:none;
 }
 .video-wrap{
   position:relative;
@@ -265,6 +292,74 @@ body{
   position:absolute;inset:0;
   width:100%;height:100%;
   border:0;
+}
+.video-modal.video-modal-girado{
+  /* Gira a MOLDURA INTEIRA (título + caixa do vídeo, tudo junto) 90°,
+     como quem deita o celular — não só o vídeo por dentro. O modal
+     primeiro se desenha largo, "tamanho de desktop" (os mesmos 720px
+     de sempre, não os ~320px da tela do celular — por isso max-width
+     vira width fixo aqui, e tira o limite de altura/scroll, que não
+     fazem sentido pra um elemento que vai ser escalado inteiro): é
+     exatamente o mesmo resultado que já funciona bem no desktop. Só
+     DEPOIS giramos + encolhemos esse conjunto pronto (escala calculada
+     via JS, em abrirVideo) pra caber na tela — nunca mexendo no
+     tamanho que o Drive "enxerga" por dentro. */
+  width:720px;
+  flex-shrink:0; /* senão o flex do overlay encolhe pra largura da tela */
+  max-width:none;
+  max-height:none;
+  overflow:visible;
+  transform-origin:center center;
+}
+
+/* Menu de tópicos — abre depois da escolha de papel no portão, lista os
+   vídeos daquele papel (ver TOPICOS em js/portao-entrada.js). Fica ATRÁS
+   do modal de vídeo (z-index menor) — ao fechar o vídeo, o menu continua
+   aberto por baixo, pra escolher outro tópico sem reabrir tudo. */
+.menu-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(31,31,30,0.6);
+  z-index:240;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow-y:auto;
+}
+.menu-overlay.aberto{display:flex;}
+.menu-modal{
+  position:relative;
+  width:100%;
+  max-width:420px;
+  max-height:90vh;
+  overflow-y:auto;
+  background:#fff;
+  border-radius:16px;
+  padding:32px 28px;
+  box-shadow:0 20px 50px rgba(0,0,0,.25);
+  text-align:center;
+}
+.menu-modal h2{
+  margin:0 0 20px;
+  padding-right:24px;
+  font-size:20px;
+  font-weight:800;
+  color:var(--rosa);
+}
+.menu-fechar{
+  position:absolute;
+  top:12px;right:14px;
+  border:none;background:none;
+  font-size:24px;line-height:1;
+  color:var(--ink-soft);
+  cursor:pointer;
+  user-select:none;
+}
+.menu-topicos{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .link-tutorial{
@@ -279,6 +374,7 @@ body{
   border:none;
   text-decoration:underline;
   cursor:pointer;
+  user-select:none;
 }
 
 /* ==========================================================================
@@ -642,8 +738,12 @@ body{
   border-radius:10px;background:#fff;
 }
 .membro-foto{
-  width:112px;height:112px;border-radius:14px;object-fit:cover;flex:none;
+  width:112px;height:112px;border-radius:50%;object-fit:cover;flex:none;
   background:#eee;
+  /* As fotos já vêm recortadas em círculo, mas com uma fina margem clara
+     em volta antes da borda da imagem — sem o zoom, essa margem aparece
+     como um "anel branco" dentro do círculo. */
+  transform:scale(1.18);
 }
 .membro-cargo{font-size:11.5px;font-weight:700;color:var(--rosa);margin:0;text-transform:uppercase;letter-spacing:.3px;}
 .membro-nome{font-size:16px;font-weight:700;margin:2px 0 0;}

@@ -19,7 +19,9 @@ const TABS = [
   ]},
   { href: "rotary-direct.html", label: "Rotary Direct" },
   { href: "abtrf.html", label: "ABTRF" },
-  { href: "campanhas.html", label: "Campanhas" },
+  // Campanhas escondida até ter conteúdo — campanhas.html continua no
+  // repositório; pra voltar, descomente a linha abaixo.
+  // { href: "campanhas.html", label: "Campanhas" },
   { href: "contato.html", label: "Fale Conosco" }
 ];
 

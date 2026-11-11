@@ -4,45 +4,69 @@
 // Assim que a página carrega, mostra um popup que NÃO pode ser fechado sem
 // escolher uma das duas opções (nada de X, nada de clicar fora, nada de
 // Esc) — mesmo princípio de um aviso de idade em site adulto, só que aqui
-// pra separar "dirigente de distrito" de "dirigente/associado de clube".
+// pra separar "dirigente de distrito" de "membro de clube".
 //
-// Depois da escolha, abre um segundo modal (esse sim fechável, com X) com
-// um vídeo tutorial — um vídeo diferente pra cada papel escolhido.
+// Depois da escolha, abre um MENU de tópicos (fechável) com os vídeos
+// relevantes pro papel escolhido — cada papel vê uma lista diferente, ver
+// MENUS abaixo. Escolhendo um tópico, abre o vídeo correspondente (esse
+// modal também fechável, com X) por cima do menu — fechando o vídeo, o
+// menu continua ali atrás, pra ver outro tópico sem reabrir tudo.
 //
-// A escolha fica guardada em sessionStorage: dura enquanto a aba do
-// navegador estiver aberta, então a pessoa não vê o portão de novo ao
+// A escolha de papel fica guardada em sessionStorage: dura enquanto a aba
+// do navegador estiver aberta, então a pessoa não vê o portão de novo ao
 // trocar de página dentro do site — só se abrir uma aba/sessão nova.
 // Isso é uma decisão de UX minha (não foi pedido explicitamente que
 // aparecesse a CADA página do site, e repetir isso a cada clique de menu
 // seria bem ruim de usar); se a ideia era aparecer sempre, é só trocar
 // sessionStorage por nada de cache aqui embaixo.
-//
-// AINDA FALTA: as URLs reais dos dois vídeos — ver "SUBSTITUIR_..." logo
-// abaixo. Sem isso, o modal de vídeo abre com o espaço reservado vazio.
 // ============================================================================
 
 const CHAVE_ESCOLHA_PAPEL = 'papelVisitante';
 
-const VIDEOS_TUTORIAL = {
-  distrito: {
-    titulo: 'Como doar pelo distrito',
-    // Troque pela URL de EMBED do vídeo (ex: YouTube:
-    // "https://www.youtube.com/embed/XXXXXXXXXXX", não a URL normal de assistir).
-    embed: 'SUBSTITUIR_PELA_URL_DE_EMBED_DO_VIDEO_DISTRITO',
+// Cada vídeo, uma vez só — "cartao" e "boleto" são usados pelos dois
+// papéis (ver MENUS logo abaixo), sem precisar duplicar o embed.
+// Todo vídeo abre girado 90° (ver abrirVideo) — sem distinção por
+// formato.
+const VIDEOS = {
+  'distrito-desktop': {
+    titulo: 'Relatório de distrito via Rotary Club Central',
+    embed: 'https://drive.google.com/file/d/1plY78matwzD-o_1Gk_WlchnjwdvcoUXj/preview',
   },
-  clube: {
-    titulo: 'Como doar (dirigente ou associado de clube)',
-    embed: 'SUBSTITUIR_PELA_URL_DE_EMBED_DO_VIDEO_CLUBE',
+  'distrito-mobile': {
+    titulo: 'Relatório de distrito via Contribuições de distrito',
+    embed: 'https://drive.google.com/file/d/17L_KZ5v9Au2GRpPyQljWN2xEZx3H8s66/preview',
   },
+  'associado': {
+    titulo: 'Relatório de associado via Rotary Club Central',
+    embed: 'https://drive.google.com/file/d/17wplHHsarypwOnWaeVqI8CTjlqKQhYtA/preview',
+  },
+  'cartao': {
+    titulo: 'Contribuição via cartão de crédito',
+    embed: 'https://drive.google.com/file/d/1kqqhTLrngb8dR8YlEHk-7N1ty5se3Igw/preview',
+  },
+  'boleto': {
+    titulo: 'Contribuição via boleto',
+    embed: 'https://drive.google.com/file/d/1IeRgDJbnJmIWNrOyF7Qc31v4ZaWRXi-k/preview',
+  },
+  'filtro': {
+    titulo: 'Utilizando filtro de pesquisa',
+    embed: 'https://drive.google.com/file/d/1Mm6WV-MkJLZSPQNpr1Ncsz-Q5XUN0nM3/preview',
+  },
+};
+
+// Quais tópicos (chaves de VIDEOS) cada papel vê, e em que ordem.
+const MENUS = {
+  distrito: ['distrito-desktop', 'distrito-mobile', 'cartao', 'boleto', 'filtro'],
+  associado: ['associado', 'cartao', 'boleto'],
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   // ---- Modal de vídeo (fechável) — montado sempre, mas só aberto quando
-  // alguém escolhe um papel (ou reabre pelo link no rodapé). ----
+  // alguém escolhe um tópico no menu. ----
   const overlayVideo = document.createElement('div');
   overlayVideo.className = 'video-overlay';
   overlayVideo.innerHTML = `
-    <div class="video-modal" role="dialog" aria-modal="true" aria-label="Como doar">
+    <div class="video-modal" role="dialog" aria-modal="true" aria-label="Vídeo tutorial">
       <button type="button" class="video-fechar" aria-label="Fechar">&times;</button>
       <h2 class="video-titulo"></h2>
       <div class="video-wrap">
@@ -53,44 +77,130 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`;
   document.body.appendChild(overlayVideo);
 
-  function abrirVideo(papel) {
-    const v = VIDEOS_TUTORIAL[papel];
+  function abrirVideo(chaveVideo) {
+    const v = VIDEOS[chaveVideo];
     if (!v) return;
     overlayVideo.querySelector('.video-titulo').textContent = v.titulo;
     overlayVideo.querySelector('.video-iframe').src = v.embed;
     overlayVideo.classList.add('aberto');
+    ajustarGiro();
   }
+
+  // Recalculado também ao virar o celular / redimensionar com o vídeo
+  // aberto — senão o modal continua girado em paisagem e sai da tela.
+  function ajustarGiro() {
+    // No mobile, gira a MOLDURA INTEIRA (título + caixa do vídeo, tudo
+    // junto) 90°, como quem deita o celular — não só o vídeo por
+    // dentro. Pra isso o modal sempre se desenha primeiro no tamanho
+    // "de desktop" (fixo, ver .video-modal-girado no CSS — mesmo
+    // tamanho que já funciona bem lá), e só DEPOIS giramos + encolhemos
+    // esse conjunto pronto pra caber na tela do celular. Assim o Drive
+    // sempre recebe uma largura generosa (nunca uma largura pequena),
+    // e o que aparece na tela é sempre esse mesmo resultado que já
+    // funciona, só menor e de lado.
+    const modal = overlayVideo.querySelector('.video-modal');
+    // Só com o celular EM PÉ: deitado a tela já é paisagem (um iPhone SE
+    // deitado tem 667px, abaixo dos 700) e girar de novo deixaria de lado.
+    const noMobile = window.matchMedia('(max-width:700px) and (orientation:portrait)').matches;
+    modal.classList.toggle('video-modal-girado', noMobile);
+    if (noMobile) {
+      modal.style.transform = '';
+      requestAnimationFrame(() => {
+        const naturalW = modal.offsetWidth;
+        const naturalH = modal.offsetHeight;
+        // Depois de girar 90°, a largura visual vem da altura natural
+        // e vice-versa — a escala tem que caber nos dois eixos da tela
+        // ao mesmo tempo (o menor dos dois manda), com uma margem de
+        // segurança de 6%.
+        const escala = Math.min(
+          window.innerWidth / naturalH,
+          window.innerHeight / naturalW
+        ) * 0.94;
+        modal.style.transform = `rotate(90deg) scale(${escala})`;
+      });
+    } else {
+      modal.style.transform = '';
+    }
+  }
+  window.addEventListener('resize', () => {
+    if (overlayVideo.classList.contains('aberto')) ajustarGiro();
+  });
   function fecharVideo() {
     overlayVideo.classList.remove('aberto');
     overlayVideo.querySelector('.video-iframe').src = ''; // para a reprodução ao fechar
   }
   overlayVideo.querySelector('.video-fechar').addEventListener('click', fecharVideo);
   overlayVideo.addEventListener('click', (e) => { if (e.target === overlayVideo) fecharVideo(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharVideo(); });
 
-  // Qualquer elemento com [data-reabrir-tutorial] na página reabre o vídeo
-  // do papel já escolhido (o rodapé ganha um desses automaticamente, logo
-  // abaixo, depois que a pessoa já escolheu um papel).
+  // ---- Menu de tópicos (fechável) — lista os vídeos do papel escolhido.
+  // Fica atrás do modal de vídeo (z-index menor, ver CSS): fechar o vídeo
+  // volta pro menu, sem precisar escolher o papel de novo. ----
+  const overlayMenu = document.createElement('div');
+  overlayMenu.className = 'menu-overlay';
+  overlayMenu.innerHTML = `
+    <div class="menu-modal" role="dialog" aria-modal="true" aria-label="Vídeos tutoriais">
+      <button type="button" class="menu-fechar" aria-label="Fechar">&times;</button>
+      <h2>Vídeos tutoriais</h2>
+      <div class="menu-topicos"></div>
+    </div>`;
+  document.body.appendChild(overlayMenu);
+
+  function fecharMenu() {
+    overlayMenu.classList.remove('aberto');
+  }
+  overlayMenu.querySelector('.menu-fechar').addEventListener('click', fecharMenu);
+  overlayMenu.addEventListener('click', (e) => { if (e.target === overlayMenu) fecharMenu(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    // Igual ao X: fecha só o que está por cima (vídeo volta pro menu).
+    if (overlayVideo.classList.contains('aberto')) fecharVideo();
+    else fecharMenu();
+  });
+
+  function abrirMenu(papel) {
+    const topicos = MENUS[papel];
+    if (!topicos) return;
+    const container = overlayMenu.querySelector('.menu-topicos');
+    container.innerHTML = topicos.map(chave =>
+      `<button type="button" class="portao-opcao" data-video="${chave}">${VIDEOS[chave].titulo}</button>`
+    ).join('');
+    container.querySelectorAll('[data-video]').forEach(btn => {
+      btn.addEventListener('click', () => abrirVideo(btn.dataset.video));
+    });
+    overlayMenu.classList.add('aberto');
+  }
+
+  // Qualquer elemento com [data-reabrir-tutorial] na página reabre o menu
+  // de tópicos do papel já escolhido (o rodapé ganha um desses
+  // automaticamente, logo abaixo, depois que a pessoa já escolheu um
+  // papel).
   document.addEventListener('click', (e) => {
     const gatilho = e.target.closest('[data-reabrir-tutorial]');
     if (!gatilho) return;
     e.preventDefault();
     const papel = sessionStorage.getItem(CHAVE_ESCOLHA_PAPEL);
-    if (papel) abrirVideo(papel);
+    if (papel) abrirMenu(papel);
   });
 
   const escolhaJaFeita = sessionStorage.getItem(CHAVE_ESCOLHA_PAPEL);
 
-  // Link "Como doar? Assista de novo" no rodapé — só depois de já ter
-  // escolhido um papel (antes disso, o próprio portão está prestes a
-  // aparecer, então não faz sentido oferecer o link ainda).
+  // Na Início o link do rodapé seria redundante — o card "Vídeos
+  // tutoriais" ali já faz a mesma coisa. Nas outras páginas continua
+  // aparecendo, porque elas não têm esse card.
+  const scriptNav = document.querySelector('script[data-pagina-atual]');
+  const naHome = scriptNav && scriptNav.dataset.paginaAtual === 'index.html';
+
+  // Link "Vídeos tutoriais" no rodapé — só depois de já ter escolhido um
+  // papel (antes disso, o próprio portão está prestes a aparecer, então
+  // não faz sentido oferecer o link ainda).
   const rodape = document.querySelector('.site-footer');
-  if (rodape && escolhaJaFeita) {
+  if (rodape && escolhaJaFeita && !naHome) {
     const link = document.createElement('button');
     link.type = 'button';
     link.className = 'link-tutorial';
     link.setAttribute('data-reabrir-tutorial', '');
-    link.textContent = 'Como doar? Assista de novo';
+    link.textContent = 'Vídeos tutoriais';
     rodape.insertBefore(link, rodape.firstChild);
   }
 
@@ -105,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <p>Antes de continuar, nos diga qual é o seu papel:</p>
       <div class="portao-opcoes">
         <button type="button" class="portao-opcao" data-papel="distrito">Sou dirigente do meu distrito</button>
-        <button type="button" class="portao-opcao" data-papel="clube">Sou dirigente ou membro do meu clube</button>
+        <button type="button" class="portao-opcao" data-papel="associado">Sou membro do meu clube</button>
       </div>
     </div>`;
   document.body.appendChild(overlayPortao);
@@ -115,15 +225,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const papel = btn.dataset.papel;
       sessionStorage.setItem(CHAVE_ESCOLHA_PAPEL, papel);
       overlayPortao.remove();
-      abrirVideo(papel);
+      abrirMenu(papel);
       // Agora que a escolha foi feita, adiciona o link do rodapé também
-      // nesta mesma página (sem precisar recarregar).
-      if (rodape && !rodape.querySelector('[data-reabrir-tutorial]')) {
+      // nesta mesma página (sem precisar recarregar) — exceto na Início,
+      // que já tem o card fazendo a mesma coisa.
+      if (rodape && !naHome && !rodape.querySelector('[data-reabrir-tutorial]')) {
         const link = document.createElement('button');
         link.type = 'button';
         link.className = 'link-tutorial';
         link.setAttribute('data-reabrir-tutorial', '');
-        link.textContent = 'Como doar? Assista de novo';
+        link.textContent = 'Vídeos tutoriais';
         rodape.insertBefore(link, rodape.firstChild);
       }
     });

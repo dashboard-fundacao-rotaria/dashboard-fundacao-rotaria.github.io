@@ -27,7 +27,7 @@
 // ver os meses já cadastrados mesmo antes da data de liberação (dia 10 do
 // mês seguinte). ANTES DE PUBLICAR DE VERDADE, volte pra "false" — senão
 // os dados aparecem pra qualquer visitante antes da hora.
-const MODO_TESTE = true;
+const MODO_TESTE = false;
 
 const MOTIVO_PADRAO = "Parabéns aos clubes e associados deste distrito pela dedicação e pelo compromisso com a Fundação Rotária!";
 
@@ -52,16 +52,11 @@ const PERIODOS_MENSAIS = [
     ano: 2026, mes: 6, // 6 = julho (0-indexado: jan=0 ... dez=11)
     anoRotario: "2026-27",
     destaques: [
-      { medalha: "prata", distrito: "[0000]", valor: null },
-      { medalha: "ouro", distrito: "[0000]", valor: null },
-      { medalha: "bronze", distrito: "[0000]", valor: null },
+      { medalha: "ouro", distrito: "4652", valor: 538.98 },
+      { medalha: "prata", distrito: "4480", valor: 472.97 },
+      { medalha: "bronze", distrito: "4640", valor: 253.95 },
     ],
   },
-  // Quando julho fechar de verdade (final de julho/2026) e você souber
-  // quem foram os 3 distritos, troque os "[0000]" acima pelos números
-  // reais, e o "null" do valor pelo total de contribuição (ex: 4820.50).
-  // A página libera sozinha em 10/08 — não precisa mexer em mais nada
-  // além disso.
   {
     ano: 2026, mes: 7, // 7 = agosto
     anoRotario: "2026-27",
@@ -69,6 +64,24 @@ const PERIODOS_MENSAIS = [
       { medalha: "prata", distrito: "4770", valor: 119.61 },
       { medalha: "ouro", distrito: "4563", valor: 195.71 },
       { medalha: "bronze", distrito: "4420", valor: 90.00 },
+    ],
+  },
+  {
+    ano: 2026, mes: 8, // 8 = setembro
+    anoRotario: "2026-27",
+    destaques: [
+      { medalha: "ouro", distrito: "4640", valor: 1011.76 },
+      { medalha: "prata", distrito: "4563", valor: 112.21 },
+      { medalha: "bronze", distrito: "4480", valor: 86.71 },
+    ],
+  },
+  {
+    ano: 2026, mes: 9, // 9 = outubro
+    anoRotario: "2026-27",
+    destaques: [
+      { medalha: "ouro", distrito: "4640", valor: 201.42 },
+      { medalha: "prata", distrito: "4760", valor: 120.69 },
+      { medalha: "bronze", distrito: "4740", valor: 105.70 },
     ],
   },
 ];
