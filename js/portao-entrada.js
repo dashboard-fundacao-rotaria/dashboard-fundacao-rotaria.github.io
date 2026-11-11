@@ -91,11 +91,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!v) return;
     overlayVideo.querySelector('.video-titulo').textContent = v.titulo;
     overlayVideo.querySelector('.video-iframe').src = v.embed;
+    overlayVideo.classList.add('aberto');
+
     // Vídeo exportado em formato vertical (9:16) — gira o player 90°,
     // como se a tela estivesse deitada, pra preencher a caixa 16:9
-    // normal em vez de ficar espremido/cortado nela.
-    overlayVideo.querySelector('.video-rotador').classList.toggle('video-rotador-girado', !!v.retrato);
-    overlayVideo.classList.add('aberto');
+    // normal em vez de ficar espremido/cortado nela. O tamanho é
+    // calculado em pixels (não em %) depois que a caixa já está
+    // visível, pra não depender de contas de porcentagem em cima de um
+    // elemento transformado — mais simples e mais confiável entre
+    // navegadores.
+    const wrap = overlayVideo.querySelector('.video-wrap');
+    const rotador = overlayVideo.querySelector('.video-rotador');
+    rotador.classList.toggle('video-rotador-girado', !!v.retrato);
+    if (v.retrato) {
+      requestAnimationFrame(() => {
+        rotador.style.width = wrap.clientHeight + 'px';
+        rotador.style.height = wrap.clientWidth + 'px';
+      });
+    } else {
+      rotador.style.width = '';
+      rotador.style.height = '';
+    }
   }
   function fecharVideo() {
     overlayVideo.classList.remove('aberto');

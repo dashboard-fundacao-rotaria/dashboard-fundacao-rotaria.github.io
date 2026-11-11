@@ -275,26 +275,12 @@ body{
      essa proporção dentro da caixa 16:9 (cortando as laterais), giramos
      o player 90°, como quem deita o celular de lado: a caixa continua
      16:9 por fora, mas o vídeo vertical passa a preenchê-la inteira,
-     sem cortar nem sobrar moldura.
-     Conta: um retângulo W×H girado 90° ocupa visualmente H×W. Pra essa
-     visual final bater com a caixa 16:9 (W × 0,5625W), o retângulo
-     ANTES de girar precisa medir 0,5625W de largura por W de altura —
-     ou seja, 56,25% de largura e 177,78% de altura em relação à caixa
-     (100% / 56,25% = 177,78%). Isso dá, sem rodeios, a proporção 9:16
-     do próprio vídeo, encaixando perfeito depois de girado. */
-  width:56.25%;
-  height:177.78%;
+     sem cortar nem sobrar moldura. O width/height em pixels é calculado
+     e aplicado via JS (abrirVideo, em js/portao-entrada.js) — aqui só
+     fica o giro em si. */
   top:50%;left:50%;
-  /* rotate3d (não rotate() 2D) + backface-visibility: contorno pra um
-     bug conhecido do Safari/iOS (e às vezes Chrome no iPhone), onde um
-     iframe dentro de um elemento com transform 2D simplesmente não
-     renderiza nada (fica em branco). Força o navegador a tratar isso
-     como uma camada 3D composta, em vez de só girar o desenho 2D. */
-  transform:translate(-50%,-50%) rotate3d(0,0,1,90deg);
+  transform:translate(-50%,-50%) rotate(90deg);
   transform-origin:center center;
-  -webkit-backface-visibility:hidden;
-  backface-visibility:hidden;
-  will-change:transform;
 }
 .video-iframe{
   position:absolute;inset:0;
