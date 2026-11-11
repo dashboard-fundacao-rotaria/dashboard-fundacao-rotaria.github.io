@@ -29,11 +29,11 @@ const CHAVE_ESCOLHA_PAPEL = 'papelVisitante';
 // formato.
 const VIDEOS = {
   'distrito-desktop': {
-    titulo: 'Relatório de distrito (computador) — Contribuições de distrito',
+    titulo: 'Relatório de distrito — Rotary Club Central',
     embed: 'https://drive.google.com/file/d/1plY78matwzD-o_1Gk_WlchnjwdvcoUXj/preview',
   },
   'distrito-mobile': {
-    titulo: 'Relatório de distrito (celular) — Contribuições de distrito',
+    titulo: 'Relatório de distrito — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/17L_KZ5v9Au2GRpPyQljWN2xEZx3H8s66/preview',
   },
   'associado': {

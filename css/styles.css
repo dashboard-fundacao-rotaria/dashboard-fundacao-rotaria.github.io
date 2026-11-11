@@ -232,6 +232,13 @@ body{
   overflow-y:auto;
 }
 .video-overlay.aberto{display:flex;}
+/* Textos dos modais não são selecionáveis: sem isso o cursor vira a
+   barrinha de texto ao passar sobre títulos e botões. */
+.portao-modal,.video-modal,.menu-modal{
+  user-select:none;
+  -webkit-user-select:none;
+  cursor:default;
+}
 .video-modal{
   position:relative;
   width:100%;
