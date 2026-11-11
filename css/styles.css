@@ -261,34 +261,27 @@ body{
 }
 .video-wrap{
   position:relative;
-  padding-top:56.25%; /* proporção 16:9 */
+  padding-top:56.25%; /* proporção 16:9 — o preview do Drive é desenhado
+    pra esse formato; forçar outra proporção (já tentamos) bagunça o
+    layout interno dele (chegou a mostrar o nome do arquivo em letras
+    gigantes em vez do vídeo). Melhor manter 16:9 e aproveitar mais
+    largura no mobile (ver media query abaixo) do que distorcer a
+    proporção. */
   border-radius:10px;
   overflow:hidden;
   background:#000;
 }
 @media (max-width:700px){
-  /* No mobile a largura do modal é pequena, então 16:9 vira uma caixa
-     baixa demais pro player de preview do Drive (que tem uma barra
-     própria e não se resume só ao vídeo) — o vídeo ficava cortado e o
-     botão de play desalinhado. Trocamos a razão largura/altura por uma
-     altura proporcional à TELA (vh), não à largura do modal, dando
-     espaço de sobra; o scroll do modal cobre o resto se precisar. */
-  .video-overlay{padding:10px;}
-  .video-modal{padding:18px;}
-  .video-wrap{padding-top:0;height:65vh;min-height:320px;}
+  /* Aproveita o máximo de largura possível na tela — com 16:9 mantido,
+     mais largura já significa mais altura também, sem arriscar quebrar
+     o layout interno do preview do Drive. */
+  .video-overlay{padding:8px;}
+  .video-modal{padding:16px;}
 }
 .video-iframe{
   position:absolute;inset:0;
   width:100%;height:100%;
   border:0;
-}
-@media (max-width:700px){
-  /* O player de preview do Drive (outro domínio, não dá pra restilizar
-     por dentro) reserva uma barra própria só no topo — isso empurra o
-     botão de play pra baixo do centro da caixa. Deixamos o iframe um
-     pouco mais alto que a caixa e deslocado pra cima: o overflow:hidden
-     do .video-wrap corta essa barra, e o vídeo em si fica recentralizado. */
-  .video-iframe{top:-24px;height:calc(100% + 24px);}
 }
 
 /* Menu de tópicos — abre depois da escolha de papel no portão, lista os
