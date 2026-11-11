@@ -71,6 +71,24 @@ const PERIODOS_MENSAIS = [
       { medalha: "bronze", distrito: "4420", valor: 90.00 },
     ],
   },
+  {
+    ano: 2026, mes: 8, // 8 = setembro
+    anoRotario: "2026-27",
+    destaques: [
+      { medalha: "ouro", distrito: "4640", valor: 1011.76 },
+      { medalha: "prata", distrito: "4563", valor: 112.21 },
+      { medalha: "bronze", distrito: "4480", valor: 86.71 },
+    ],
+  },
+  {
+    ano: 2026, mes: 9, // 9 = outubro
+    anoRotario: "2026-27",
+    destaques: [
+      { medalha: "ouro", distrito: "4640", valor: 201.42 },
+      { medalha: "prata", distrito: "4760", valor: 120.69 },
+      { medalha: "bronze", distrito: "4740", valor: 105.70 },
+    ],
+  },
 ];
 
 const ROTULO_MEDALHA = { prata: "Prata", ouro: "Ouro", bronze: "Bronze" };
