@@ -25,33 +25,39 @@ const CHAVE_ESCOLHA_PAPEL = 'papelVisitante';
 
 // Cada vídeo, uma vez só — "cartao" e "boleto" são usados pelos dois
 // papéis (ver MENUS logo abaixo), sem precisar duplicar o embed.
+// Todos exportados do CapCut no formato vertical (Stories/Reels, 9:16),
+// independente do que foi gravado na tela (computador ou celular) — por
+// isso todos usam a caixa retrato, não só o "distrito-mobile".
 const VIDEOS = {
   'distrito-desktop': {
     titulo: 'Relatório de distrito (computador) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/1plY78matwzD-o_1Gk_WlchnjwdvcoUXj/preview',
+    retrato: true,
   },
   'distrito-mobile': {
     titulo: 'Relatório de distrito (celular) — Contribuições de distrito',
     embed: 'https://drive.google.com/file/d/17L_KZ5v9Au2GRpPyQljWN2xEZx3H8s66/preview',
-    // Gravação de tela de celular — formato vertical. Os outros vídeos
-    // são gravações de computador (horizontal, 16:9 padrão).
     retrato: true,
   },
   'associado': {
     titulo: 'Relatório de associado — Rotary Club Central',
     embed: 'https://drive.google.com/file/d/17wplHHsarypwOnWaeVqI8CTjlqKQhYtA/preview',
+    retrato: true,
   },
   'cartao': {
     titulo: 'Contribuição via cartão de crédito',
     embed: 'https://drive.google.com/file/d/1kqqhTLrngb8dR8YlEHk-7N1ty5se3Igw/preview',
+    retrato: true,
   },
   'boleto': {
     titulo: 'Contribuição via boleto',
     embed: 'https://drive.google.com/file/d/1IeRgDJbnJmIWNrOyF7Qc31v4ZaWRXi-k/preview',
+    retrato: true,
   },
   'filtro': {
     titulo: 'Utilizando filtro de pesquisa',
     embed: 'https://drive.google.com/file/d/1Mm6WV-MkJLZSPQNpr1Ncsz-Q5XUN0nM3/preview',
+    retrato: true,
   },
 };
 
@@ -71,9 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="button" class="video-fechar" aria-label="Fechar">&times;</button>
       <h2 class="video-titulo"></h2>
       <div class="video-wrap">
-        <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
+        <div class="video-rotador">
+          <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
       </div>
     </div>`;
   document.body.appendChild(overlayVideo);
@@ -83,10 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!v) return;
     overlayVideo.querySelector('.video-titulo').textContent = v.titulo;
     overlayVideo.querySelector('.video-iframe').src = v.embed;
-    // Vídeo gravado na vertical (celular) usa uma caixa estreita e alta
-    // (9:16) em vez do 16:9 padrão — senão a gravação vertical fica
-    // espremida/cortada numa caixa pensada pra horizontal.
-    overlayVideo.querySelector('.video-wrap').classList.toggle('video-wrap-retrato', !!v.retrato);
+    // Vídeo exportado em formato vertical (9:16) — gira o player 90°,
+    // como se a tela estivesse deitada, pra preencher a caixa 16:9
+    // normal em vez de ficar espremido/cortado nela.
+    overlayVideo.querySelector('.video-rotador').classList.toggle('video-rotador-girado', !!v.retrato);
     overlayVideo.classList.add('aberto');
   }
   function fecharVideo() {

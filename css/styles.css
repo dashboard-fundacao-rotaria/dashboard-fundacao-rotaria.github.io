@@ -261,29 +261,32 @@ body{
 }
 .video-wrap{
   position:relative;
-  padding-top:56.25%; /* proporção 16:9 — formato padrão, gravações de
-    computador (horizontal). */
+  padding-top:56.25%; /* proporção 16:9 — caixa do player, sempre nesse
+    formato (ver .video-rotador pra vídeo vertical). */
   border-radius:10px;
   overflow:hidden;
   background:#000;
 }
-.video-wrap.video-wrap-retrato{
-  /* Gravação de celular (vertical, 9:16) — caixa estreita e alta em vez
-     de larga e baixa, senão o vídeo fica espremido numa proporção que
-     não é a dele. Centralizada e com teto de altura pra não estourar a
-     tela em telas baixas (o modal já tem scroll se precisar). */
-  padding-top:0;
-  aspect-ratio:9/16;
-  width:min(100%, 280px);
-  max-height:70vh;
-  margin:0 auto;
+.video-rotador{
+  position:absolute;inset:0;
 }
-@media (max-width:700px){
-  /* Aproveita o máximo de largura possível na tela — com 16:9 mantido,
-     mais largura já significa mais altura também, sem arriscar quebrar
-     o layout interno do preview do Drive. */
-  .video-overlay{padding:8px;}
-  .video-modal{padding:16px;}
+.video-rotador.video-rotador-girado{
+  /* Vídeo exportado em formato vertical (9:16) — em vez de espremer
+     essa proporção dentro da caixa 16:9 (cortando as laterais), giramos
+     o player 90°, como quem deita o celular de lado: a caixa continua
+     16:9 por fora, mas o vídeo vertical passa a preenchê-la inteira,
+     sem cortar nem sobrar moldura.
+     Conta: um retângulo W×H girado 90° ocupa visualmente H×W. Pra essa
+     visual final bater com a caixa 16:9 (W × 0,5625W), o retângulo
+     ANTES de girar precisa medir 0,5625W de largura por W de altura —
+     ou seja, 56,25% de largura e 177,78% de altura em relação à caixa
+     (100% / 56,25% = 177,78%). Isso dá, sem rodeios, a proporção 9:16
+     do próprio vídeo, encaixando perfeito depois de girado. */
+  width:56.25%;
+  height:177.78%;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%) rotate(90deg);
+  transform-origin:center center;
 }
 .video-iframe{
   position:absolute;inset:0;
