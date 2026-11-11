@@ -283,6 +283,7 @@ body{
      via JS, em abrirVideo) pra caber na tela — nunca mexendo no
      tamanho que o Drive "enxerga" por dentro. */
   width:720px;
+  flex-shrink:0; /* senão o flex do overlay encolhe pra largura da tela */
   max-width:none;
   max-height:none;
   overflow:visible;
