@@ -261,30 +261,32 @@ body{
 }
 .video-wrap{
   position:relative;
-  padding-top:56.25%; /* proporção 16:9 — a página/modal continuam
-    nesse formato; só o .video-rotador gira por dentro no mobile. */
+  padding-top:56.25%; /* proporção 16:9 */
   border-radius:10px;
   overflow:hidden;
   background:#000;
-}
-.video-rotador{
-  position:absolute;inset:0;
-}
-.video-rotador.video-rotador-girado{
-  /* Gira só o player 90° (como deitar o vídeo de lado) — a página
-     continua na vertical atrás, sem tela cheia e sem mexer na
-     orientação do celular. width/height em pixels calculados via JS
-     (abrirVideo), direto do tamanho real da caixa — não em %, pra não
-     depender de como cada navegador resolve porcentagem sobre um
-     elemento já transformado. */
-  top:50%;left:50%;
-  transform:translate(-50%,-50%) rotate(90deg);
-  transform-origin:center center;
 }
 .video-iframe{
   position:absolute;inset:0;
   width:100%;height:100%;
   border:0;
+}
+.video-modal.video-modal-girado{
+  /* Gira a MOLDURA INTEIRA (título + caixa do vídeo, tudo junto) 90°,
+     como quem deita o celular — não só o vídeo por dentro. O modal
+     primeiro se desenha largo, "tamanho de desktop" (os mesmos 720px
+     de sempre, não os ~320px da tela do celular — por isso max-width
+     vira width fixo aqui, e tira o limite de altura/scroll, que não
+     fazem sentido pra um elemento que vai ser escalado inteiro): é
+     exatamente o mesmo resultado que já funciona bem no desktop. Só
+     DEPOIS giramos + encolhemos esse conjunto pronto (escala calculada
+     via JS, em abrirVideo) pra caber na tela — nunca mexendo no
+     tamanho que o Drive "enxerga" por dentro. */
+  width:720px;
+  max-width:none;
+  max-height:none;
+  overflow:visible;
+  transform-origin:center center;
 }
 
 /* Menu de tópicos — abre depois da escolha de papel no portão, lista os

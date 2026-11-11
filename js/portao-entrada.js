@@ -70,11 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="button" class="video-fechar" aria-label="Fechar">&times;</button>
       <h2 class="video-titulo"></h2>
       <div class="video-wrap">
-        <div class="video-rotador">
-          <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen></iframe>
-        </div>
+        <iframe class="video-iframe" src="" title="Vídeo tutorial" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
       </div>
     </div>`;
   document.body.appendChild(overlayVideo);
@@ -86,21 +84,35 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayVideo.querySelector('.video-iframe').src = v.embed;
     overlayVideo.classList.add('aberto');
 
-    // Só o PLAYER gira 90° no mobile (a página inteira continua na
-    // vertical atrás, sem tela cheia e sem mexer na tela do celular) —
-    // como quem deita só o vídeo de lado dentro da caixa 16:9 normal.
-    const wrap = overlayVideo.querySelector('.video-wrap');
-    const rotador = overlayVideo.querySelector('.video-rotador');
+    // No mobile, gira a MOLDURA INTEIRA (título + caixa do vídeo, tudo
+    // junto) 90°, como quem deita o celular — não só o vídeo por
+    // dentro. Pra isso o modal sempre se desenha primeiro no tamanho
+    // "de desktop" (fixo, ver .video-modal-girado no CSS — mesmo
+    // tamanho que já funciona bem lá), e só DEPOIS giramos + encolhemos
+    // esse conjunto pronto pra caber na tela do celular. Assim o Drive
+    // sempre recebe uma largura generosa (nunca uma largura pequena),
+    // e o que aparece na tela é sempre esse mesmo resultado que já
+    // funciona, só menor e de lado.
+    const modal = overlayVideo.querySelector('.video-modal');
     const noMobile = window.matchMedia('(max-width:700px)').matches;
-    rotador.classList.toggle('video-rotador-girado', noMobile);
+    modal.classList.toggle('video-modal-girado', noMobile);
     if (noMobile) {
+      modal.style.transform = '';
       requestAnimationFrame(() => {
-        rotador.style.width = wrap.clientHeight + 'px';
-        rotador.style.height = wrap.clientWidth + 'px';
+        const naturalW = modal.offsetWidth;
+        const naturalH = modal.offsetHeight;
+        // Depois de girar 90°, a largura visual vem da altura natural
+        // e vice-versa — a escala tem que caber nos dois eixos da tela
+        // ao mesmo tempo (o menor dos dois manda), com uma margem de
+        // segurança de 6%.
+        const escala = Math.min(
+          window.innerWidth / naturalH,
+          window.innerHeight / naturalW
+        ) * 0.94;
+        modal.style.transform = `rotate(90deg) scale(${escala})`;
       });
     } else {
-      rotador.style.width = '';
-      rotador.style.height = '';
+      modal.style.transform = '';
     }
   }
   function fecharVideo() {
