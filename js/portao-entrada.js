@@ -83,7 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
     overlayVideo.querySelector('.video-titulo').textContent = v.titulo;
     overlayVideo.querySelector('.video-iframe').src = v.embed;
     overlayVideo.classList.add('aberto');
+    ajustarGiro();
+  }
 
+  // Recalculado também ao virar o celular / redimensionar com o vídeo
+  // aberto — senão o modal continua girado em paisagem e sai da tela.
+  function ajustarGiro() {
     // No mobile, gira a MOLDURA INTEIRA (título + caixa do vídeo, tudo
     // junto) 90°, como quem deita o celular — não só o vídeo por
     // dentro. Pra isso o modal sempre se desenha primeiro no tamanho
@@ -115,6 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.style.transform = '';
     }
   }
+  window.addEventListener('resize', () => {
+    if (overlayVideo.classList.contains('aberto')) ajustarGiro();
+  });
   function fecharVideo() {
     overlayVideo.classList.remove('aberto');
     overlayVideo.querySelector('.video-iframe').src = ''; // para a reprodução ao fechar
@@ -143,8 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    fecharVideo();
-    fecharMenu();
+    // Igual ao X: fecha só o que está por cima (vídeo volta pro menu).
+    if (overlayVideo.classList.contains('aberto')) fecharVideo();
+    else fecharMenu();
   });
 
   function abrirMenu(papel) {
